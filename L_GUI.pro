@@ -88,3 +88,6 @@ Resources/Textures/ugly_color.png
 
 #win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../LEti_Engine/OpenGL/GLFW/lib/ -lglfw3
 #else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LEti_Engine/OpenGL/GLFW/lib/ -lglfw3
+
+HEADERS += \
+	include/Screen.h

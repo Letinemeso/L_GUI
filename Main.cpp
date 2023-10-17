@@ -10,7 +10,10 @@
 #include <FPS_Timer.h>
 #include <Object_System/Object_2D.h>
 
-#include <Shader/Shader.h>
+#include <Shader/Shader_Components/Shader_Transform_Component.h>
+#include <Shader/Shader_Types/Vertex_Shader.h>
+#include <Shader/Shader_Types/Fragment_Shader.h>
+#include <Shader/Shader_Program.h>
 #include <Camera/Camera_2D.h>
 #include <Picture/Graphic_Resources_Manager.h>
 
@@ -166,27 +169,27 @@ public:
 class Grab
 {
 public:
-	enum class Type
-	{
-		none = 0,
-		drag,
-		launch
-	};
+    enum class Type
+    {
+        none = 0,
+        drag,
+        launch
+    };
 
 private:
     Test_Object* grabbed_object = nullptr;
-	glm::vec3 cursor_pos;
+    glm::vec3 cursor_pos;
 
-	glm::vec3 launch_from{0.0f, 0.0f, 0.0f};
+    glm::vec3 launch_from{0.0f, 0.0f, 0.0f};
 
-	Type type = Type::none;
+    Type type = Type::none;
 
 public:
     const LR::Camera_2D* camera = nullptr;
 
 public:
-	void update()
-	{
+    void update()
+    {
         cursor_pos = {LR::Window_Controller::get_cursor_position().x, LR::Window_Controller::get_cursor_position().y, 0.0f};
         cursor_pos = camera->convert_window_coords(cursor_pos);
 
@@ -197,13 +200,13 @@ public:
 
         if(type == Type::drag)
             grabbed_object->current_state().set_position(cursor_pos);
-	}
+    }
 
     void grab(Test_Object* _obj, Type _type)
-	{
-		if(type != Type::none) return;
-		type = _type;
-		grabbed_object = _obj;
+    {
+        if(type != Type::none) return;
+        type = _type;
+        grabbed_object = _obj;
 
         grabbed_object->physics_module->set_velocity({0.0f, 0.0f, 0.0f});
         grabbed_object->physics_module->set_angular_velocity(0.0f);
@@ -213,26 +216,26 @@ public:
 
         if(_type == Type::launch)
             launch_from = cursor_pos;
-	}
+    }
 
     void release(float _dt)
-	{
-		if(!grabbed_object) return;
+    {
+        if(!grabbed_object) return;
 
-		if(type == Type::drag)
-		{
+        if(type == Type::drag)
+        {
             glm::vec3 stride = grabbed_object->current_state().position() - grabbed_object->previous_state().position();
             grabbed_object->physics_module->set_velocity(stride);
-		}
-		else if(type == Type::launch)
-		{
-			glm::vec3 stride = (cursor_pos - launch_from);
+        }
+        else if(type == Type::launch)
+        {
+            glm::vec3 stride = (cursor_pos - launch_from);
             grabbed_object->physics_module->set_velocity(stride);
-		}
+        }
 
-		grabbed_object = nullptr;
-		type = Type::none;
-	}
+        grabbed_object = nullptr;
+        type = Type::none;
+    }
 
 };
 
@@ -505,8 +508,11 @@ int main()
     glm::vec3 cursor_position(0.0f, 0.0f, 0.0f);
 
 
-    LST::File vertex_shader_file("Resources/Shaders/vertex_shader.shader");
-    LST::File fragment_shader_file("Resources/Shaders/fragment_shader.shader");
+//    LST::File vertex_shader_file("Resources/Shaders/vertex_shader.shader");
+//    LST::File fragment_shader_file("Resources/Shaders/fragment_shader.shader");
+
+    LST::File vertex_shader_file("Resources/Shaders/test/vertex_transform_component.shader");
+    LST::File fragment_shader_file("Resources/Shaders/test/fragment_shader.shader");
 
     LV::MDL_Reader reader;
 
@@ -514,7 +520,28 @@ int main()
 
     glEnable(GL_SCISSOR_TEST);
 
-    LR::Shader shader;
+    LR::Shader_Transform_Component* v_shader_transform_component = new LR::Shader_Transform_Component;
+    v_shader_transform_component->set_source(vertex_shader_file.extract_block());
+    v_shader_transform_component->set_main_call("process_transform();");
+
+    LR::Vertex_Shader* vertex_shader = new LR::Vertex_Shader;
+    vertex_shader->set_glsl_version("330 core");
+    vertex_shader->add_component(v_shader_transform_component);
+    vertex_shader->compile();
+
+    LR::Shader_Component* f_shader_component = new LR::Shader_Component;
+    f_shader_component->set_source(fragment_shader_file.extract_block());
+    f_shader_component->set_main_call("process_color();");
+
+    LR::Fragment_Shader* fragment_shader = new LR::Fragment_Shader;
+    fragment_shader->set_glsl_version("330 core");
+    fragment_shader->add_component(f_shader_component);
+    fragment_shader->compile();
+
+    LR::Shader_Program shader_program;
+    shader_program.add_shader(vertex_shader);
+    shader_program.add_shader(fragment_shader);
+    shader_program.init();
 
     LR::Camera_2D camera;
     camera.set_view_scale(1.0f);
@@ -522,23 +549,21 @@ int main()
 
     LR::Renderer renderer;
     renderer.set_camera(&camera);
-    renderer.set_shader(&shader);
+    renderer.set_shader_program(&shader_program);
 
-    shader.init(vertex_shader_file.extract_block(), fragment_shader_file.extract_block());
+//    glm::mat4x4 test_crop_matrix =
+//    {
+//        0.0f, 0.0f, 0.0f, 0.0f,
+//        0.0f, 0.0f, 0.0f, 0.0f,
+//        0.0f, 0.0f, 0.0f, 0.0f,
+//        0.0f, 0.0f, 0.0f, 0.0f
+//    };
 
-    glm::mat4x4 test_crop_matrix =
-    {
-        0.0f, 0.0f, 0.0f, 0.0f,
-        0.0f, 0.0f, 0.0f, 0.0f,
-        0.0f, 0.0f, 0.0f, 0.0f,
-        0.0f, 0.0f, 0.0f, 0.0f
-    };
-
-    test_crop_matrix[0][0] = 30.0f;
-    test_crop_matrix[0][1] = 1200.0f - 30.0f;
-    test_crop_matrix[1][0] = 30.0f;
-    test_crop_matrix[1][1] = 800.0f - 30.0f;
-    shader.set_matrix_uniform(test_crop_matrix, shader.get_matrix_uniform_location("vs_in_crop_area"));
+//    test_crop_matrix[0][0] = 30.0f;
+//    test_crop_matrix[0][1] = 1200.0f - 30.0f;
+//    test_crop_matrix[1][0] = 30.0f;
+//    test_crop_matrix[1][1] = 800.0f - 30.0f;
+//    shader_program.set_matrix_uniform(test_crop_matrix, shader_program.get_matrix_uniform_location("vs_in_crop_area"));
 
 
     LPhys::Collision_Detector_2D collision_detector;
@@ -574,6 +599,7 @@ int main()
     test_object_stub.assign_values(reader.get_stub("triangle"));
     test_object_stub.on_values_assigned();
     test_object_stub.draw_module->renderer = &renderer;
+    test_object_stub.draw_module->shader_transform_component = v_shader_transform_component;
     test_object_stub.draw_module->graphic_resources_manager = &graphics_resources_manager;
     test_object_stub.scale = {20.0f, 20.0f, 1.0f};
 
@@ -596,10 +622,10 @@ int main()
     }
 
 
-	///////////////// 2d collision test
+    ///////////////// 2d collision test
 
-	auto reset_func = [&]()
-	{
+    auto reset_func = [&]()
+    {
         for(unsigned int i=0; i<objects_amount; ++i)
         {
             Test_Object* test_object = test_objects[i];
@@ -622,10 +648,10 @@ int main()
 
 //        test_object_0->update_previous_state();
 //        test_object_1->update_previous_state();
-	};
-	reset_func();
+    };
+    reset_func();
 
-	auto launch_func = [&]()
+    auto launch_func = [&]()
     {
         Test_Object* test_object_0 = test_objects[0];
         Test_Object* test_object_1 = test_objects[1];
@@ -634,9 +660,9 @@ int main()
 //        test_object_1->physics_module->set_angular_velocity(LEti::Math::PI);
 
         test_object_0->physics_module->set_velocity({700.0f, 0.0f, 0.0f});
-	};
+    };
 
-	Grab grab;
+    Grab grab;
     grab.camera = &camera;
 
     LEti::FPS_Timer fps_timer;
@@ -644,9 +670,9 @@ int main()
 
     collision_detector.register_point(&cursor_position);
 
-	unsigned int fps_counter = 0;
+    unsigned int fps_counter = 0;
 
-	bool intersection_on_prev_frame = false;
+    bool intersection_on_prev_frame = false;
 
     Color_Controll color_controll;
 
@@ -655,7 +681,7 @@ int main()
         timer.update();
         LR::Window_Controller::update();
 
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         for(unsigned int i=0; i<objects_amount; ++i)
         {
@@ -664,27 +690,27 @@ int main()
         }
 
         if (LR::Window_Controller::key_was_pressed(GLFW_KEY_K))
-		{
-		}
+        {
+        }
         if (LR::Window_Controller::is_key_down(GLFW_KEY_J))
-		{
+        {
             //			flat_co.rotate_impulse(LEti::Math::HALF_PI * LR::Window_Controller::get_dt());
-		}
+        }
         if (LR::Window_Controller::is_key_down(GLFW_KEY_L))
-		{
+        {
             //			flat_co.rotate_impulse(-LEti::Math::HALF_PI * LR::Window_Controller::get_dt());
-		}
+        }
 
         if(LR::Window_Controller::key_was_pressed(GLFW_KEY_R))
-		{
-			reset_func();
-		}
+        {
+            reset_func();
+        }
 
         if(LR::Window_Controller::key_was_pressed(GLFW_KEY_SPACE))
-		{
+        {
 //			reset_func();
-			launch_func();
-		}
+            launch_func();
+        }
 
 //		if (LR::Window_Controller::is_key_down(GLFW_KEY_W))
 //			sandclock_co.apply_linear_impulse({0.0f, 10.0f, 0.0f});
@@ -738,53 +764,53 @@ int main()
         for(unsigned int i=0; i<objects_amount; ++i)
         {
             Test_Object* object = test_objects[i];
-            object->physics_module->apply_linear_impulse(glm::vec3(0.0f, -100.0f, 0.0f) * timer.dt());
+//            object->physics_module->apply_linear_impulse(glm::vec3(0.0f, -100.0f, 0.0f) * timer.dt());
         }
 
 //		LEti::Camera_2D::set_position(flat_co.get_pos());
 
         if(LR::Window_Controller::mouse_button_was_pressed(GLFW_MOUSE_BUTTON_1))
-		{
-			cursor_position.z = 0.0f;
+        {
+            cursor_position.z = 0.0f;
             cursor_position.x = LR::Window_Controller::get_cursor_position().x;
             cursor_position.y = LR::Window_Controller::get_cursor_position().y;
 
-			L_LOG("MOUSE_POS_LL", "Raw coords: " + std::to_string(cursor_position.x) + " " + std::to_string(cursor_position.y));
+            L_LOG("MOUSE_POS_LL", "Raw coords: " + std::to_string(cursor_position.x) + " " + std::to_string(cursor_position.y));
 
             cursor_position = camera.convert_window_coords(cursor_position);
 
-			L_LOG("MOUSE_POS_LL", "Processed coords: " + std::to_string(cursor_position.x) + " " + std::to_string(cursor_position.y));
-		}
+            L_LOG("MOUSE_POS_LL", "Processed coords: " + std::to_string(cursor_position.x) + " " + std::to_string(cursor_position.y));
+        }
         if(LR::Window_Controller::mouse_button_was_released(GLFW_MOUSE_BUTTON_1))
-		{
-			cursor_position.z = 0.0f;
+        {
+            cursor_position.z = 0.0f;
             cursor_position.x = LR::Window_Controller::get_cursor_position().x;
             cursor_position.y = LR::Window_Controller::get_cursor_position().y;
 
-			L_LOG("MOUSE_POS_LL", "Raw coords: " + std::to_string(cursor_position.x) + " " + std::to_string(cursor_position.y));
+            L_LOG("MOUSE_POS_LL", "Raw coords: " + std::to_string(cursor_position.x) + " " + std::to_string(cursor_position.y));
 
             cursor_position = camera.convert_window_coords(cursor_position);
 
-			L_LOG("MOUSE_POS_LL", "Processed coords: " + std::to_string(cursor_position.x) + " " + std::to_string(cursor_position.y));
-		}
+            L_LOG("MOUSE_POS_LL", "Processed coords: " + std::to_string(cursor_position.x) + " " + std::to_string(cursor_position.y));
+        }
         if(LR::Window_Controller::mouse_button_was_pressed(GLFW_MOUSE_BUTTON_2))
-		{
-			cursor_position.z = 0.0f;
+        {
+            cursor_position.z = 0.0f;
             cursor_position.x = LR::Window_Controller::get_cursor_position().x;
             cursor_position.y = LR::Window_Controller::get_cursor_position().y;
 
             cursor_position = camera.convert_window_coords(cursor_position);
-		}
+        }
 
-		collision_detector.update();
+        collision_detector.update();
 
         collision_resolver.resolve_all(collision_detector.get_collisions__models(), timer.dt());
 
 
 
-		std::string points_str;
+        std::string points_str;
 
-		grab.update();
+        grab.update();
 
         if(LR::Window_Controller::mouse_button_was_pressed(GLFW_MOUSE_BUTTON_1))
         {
@@ -812,7 +838,7 @@ int main()
 
 
         LR::Window_Controller::swap_buffers();
-	}
+    }
 
     for(unsigned int i=0; i<objects_amount; ++i)
     {
@@ -820,7 +846,7 @@ int main()
         delete object;
     }
 
-	return 0;
+    return 0;
 }
 
 
