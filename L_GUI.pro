@@ -56,7 +56,8 @@ INCLUDEPATH += "../L_Physics/include/"
 
 
 SOURCES += \
-Main.cpp \
+Main.cpp \ \
+	Screen.cpp
 
 DISTFILES += \
 Resources/Font/font_yellow.png \

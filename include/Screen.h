@@ -3,6 +3,9 @@
 
 #include <Data_Structures/Map.h>
 
+#include <Variable_Base.h>
+#include <Object_Constructor.h>
+
 #include <Object_System/Object_2D.h>
 
 #include <Renderer/Renderer.h>
@@ -20,11 +23,10 @@ namespace LGui
 
     public:
         Screen();
-        Screen(Screen&& _other);
-
         ~Screen();
 
     private:
+        Screen(Screen&& _other) = delete;
         Screen(const Screen& _other) = delete;
 
     public:
@@ -37,6 +39,20 @@ namespace LGui
 
     public:
         void update(float _dt);
+
+    };
+
+
+    class Screen_Constructor
+    {
+    private:
+        const LV::Object_Constructor* m_object_constructor = nullptr;
+
+    public:
+        inline void inject_object_constructor(const LV::Object_Constructor* _ptr) { m_object_constructor = _ptr; }
+
+    public:
+        Screen* construct_screen(const LV::MDL_Variable_Stub& _stub) const;
 
     };
 
