@@ -3,6 +3,7 @@
 #include <map>
 
 #include <MDL_Reader.h>
+#include <Object_Constructor.h>
 
 #include <Stuff/Timer.h>
 #include <Stuff/File.h>
@@ -27,6 +28,42 @@
 #include <Draw_Modules/Draw_Module__Animation.h>
 #include <Draw_Modules/Draw_Module__Text_Field.h>
 #include <Renderer/Renderer.h>
+
+
+
+
+
+
+struct Data
+{
+    bool initialized = false;
+    LDS::Vector<int> ints;
+};
+
+struct Test
+{
+    static Data static_data;
+
+    static const Data& get_data();
+};
+
+Data Test::static_data;
+
+const Data& Test::get_data()
+{
+    if(static_data.initialized)
+        return static_data;
+
+    static_data.ints.push(1);
+    static_data.ints.push(2);
+    static_data.ints.push(3);
+
+    static_data.initialized = true;
+
+    return static_data;
+}
+
+
 
 
 
@@ -70,8 +107,8 @@ public:
 
 INIT_FIELDS(Test_Object_Stub, LEti::Object_2D_Stub)
 
-ADD_CHILD("draw_module", *draw_module)
-ADD_CHILD("physics_module", *physics_module)
+ADD_CHILD("draw_module", draw_module)
+ADD_CHILD("physics_module", physics_module)
 
 FIELDS_END
 
@@ -507,6 +544,9 @@ int main()
 
     glm::vec3 cursor_position(0.0f, 0.0f, 0.0f);
 
+    Data test_data = Test::get_data();
+    Test test;
+    test_data = test.get_data();
 
 //    LST::File vertex_shader_file("Resources/Shaders/vertex_shader.shader");
 //    LST::File fragment_shader_file("Resources/Shaders/fragment_shader.shader");
@@ -591,12 +631,18 @@ int main()
     //  ~engine setup
 
 
+    LV::Object_Constructor object_constructor;
+    object_constructor.register_type<Test_Object_Stub>();
+    object_constructor.register_type<LR::Default_Draw_Module_2D_Stub>();
+    object_constructor.register_type<LPhys::Rigid_Body_2D__Stub>();
 
 
-    Test_Object_Stub test_object_stub;
-    test_object_stub.draw_module = new LR::Default_Draw_Module_2D_Stub;
-    test_object_stub.physics_module = new LPhys::Rigid_Body_2D__Stub;
-    test_object_stub.assign_values(reader.get_stub("triangle"));
+
+    Test_Object_Stub* test_object_stub_generated_test = (Test_Object_Stub*)object_constructor.construct(reader.get_stub("triangle"));
+
+    Test_Object_Stub& test_object_stub = *test_object_stub_generated_test;
+//    test_object_stub.assign_values(reader.get_stub("triangle"));
+//    test_object_stub.init_childs(reader.get_stub("triangle"));
     test_object_stub.on_values_assigned();
     test_object_stub.draw_module->renderer = &renderer;
     test_object_stub.draw_module->shader_transform_component = v_shader_transform_component;
@@ -621,6 +667,7 @@ int main()
         collision_detector.register_object(test_object->physics_module);
     }
 
+    delete test_object_stub_generated_test;
 
     ///////////////// 2d collision test
 

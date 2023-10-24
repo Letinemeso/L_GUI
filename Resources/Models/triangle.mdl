@@ -1,7 +1,17 @@
 |triangle|
 \
+    |type|
+    \
+        "Test_Object_Stub"
+    /
+
     ||draw_module||
     \
+        |type|
+        \
+            "LR::Default_Draw_Module_2D_Stub"
+        /
+    
         |coords_count|
         \
             "9"
@@ -40,6 +50,11 @@
 
     ||physics_module||
     \
+        |type|
+        \
+            "LPhys::Rigid_Body_2D__Stub"
+        /
+    
         |collision_permissions|
         \
             "+" "+" "+"
