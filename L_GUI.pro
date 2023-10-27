@@ -56,8 +56,9 @@ INCLUDEPATH += "../L_Physics/include/"
 
 
 SOURCES += \
-Main.cpp \ \
-	Screen.cpp
+	Main.cpp \
+	source/Screen.cpp \
+	source/UI_Object_Stub.cpp
 
 DISTFILES += \
 Resources/Font/font_yellow.png \
@@ -91,4 +92,5 @@ Resources/Textures/ugly_color.png
 #else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LEti_Engine/OpenGL/GLFW/lib/ -lglfw3
 
 HEADERS += \
-	include/Screen.h
+	include/Screen.h \
+	include/UI_Object_Stub.h

@@ -6,9 +6,9 @@
 #include <Variable_Base.h>
 #include <Object_Constructor.h>
 
-#include <Object_System/Object_2D.h>
-
 #include <Renderer/Renderer.h>
+
+#include <UI_Object_Stub.h>
 
 
 namespace LGui
@@ -35,9 +35,10 @@ namespace LGui
     public:
         void add_object(const std::string& _name, LEti::Object_2D* _object);    //  Screen takes ownership of _object
         LEti::Object_2D* extract_object(const std::string& _name);              //  Screen releases ownership of returned object
-        LEti::Object_2D* get_object(const std::string& _name);                  //  Screen does not release ownership of returned object
+        LEti::Object_2D* get_object(const std::string& _name) const;                  //  Screen does not release ownership of returned object
 
     public:
+        void update_previous_state();
         void update(float _dt);
 
     };

@@ -29,7 +29,8 @@
 #include <Draw_Modules/Draw_Module__Text_Field.h>
 #include <Renderer/Renderer.h>
 
-
+#include <UI_Object_Stub.h>
+#include <Screen.h>
 
 
 
@@ -621,6 +622,8 @@ int main()
 
     reader.parse_file("Resources/Textures/textures");
     reader.parse_file("Resources/Models/triangle");
+    reader.parse_file("Resources/Models/ui_object_stub_test");
+    reader.parse_file("Resources/Models/screen_test");
     LR::Graphic_Resources_Manager graphics_resources_manager;
 
     graphics_resources_manager.load_resources(reader.get_stub("resources"));
@@ -636,14 +639,25 @@ int main()
     object_constructor.register_type<LR::Default_Draw_Module_2D_Stub>();
     object_constructor.register_type<LPhys::Rigid_Body_2D__Stub>();
 
+    object_constructor.register_type<LGui::UI_Object_Stub>();
+
+
+    LGui::Screen_Constructor screen_constructor;
+    screen_constructor.inject_object_constructor(&object_constructor);
+    LGui::Screen* screen = screen_constructor.construct_screen(reader.get_stub("screen_test"));
+
+
+    LGui::UI_Object_Stub* ui_object_stub_test = (LGui::UI_Object_Stub*)object_constructor.construct(reader.get_stub("ui_object_stub_test"));
+    ui_object_stub_test->draw_module_stub->renderer = &renderer;
+    ui_object_stub_test->draw_module_stub->shader_transform_component = v_shader_transform_component;
+    ui_object_stub_test->draw_module_stub->graphic_resources_manager = &graphics_resources_manager;
+    LEti::Object_2D* ui_object_test = (LEti::Object_2D*)ui_object_stub_test->construct();
+
 
 
     Test_Object_Stub* test_object_stub_generated_test = (Test_Object_Stub*)object_constructor.construct(reader.get_stub("triangle"));
 
     Test_Object_Stub& test_object_stub = *test_object_stub_generated_test;
-//    test_object_stub.assign_values(reader.get_stub("triangle"));
-//    test_object_stub.init_childs(reader.get_stub("triangle"));
-    test_object_stub.on_values_assigned();
     test_object_stub.draw_module->renderer = &renderer;
     test_object_stub.draw_module->shader_transform_component = v_shader_transform_component;
     test_object_stub.draw_module->graphic_resources_manager = &graphics_resources_manager;
@@ -736,6 +750,9 @@ int main()
             object->update_previous_state();
         }
 
+//        ui_object_test->update_previous_state();
+        screen->update_previous_state();
+
         if (LR::Window_Controller::key_was_pressed(GLFW_KEY_K))
         {
         }
@@ -807,6 +824,9 @@ int main()
                 object->physics_module->set_velocity({object->physics_module->velocity().x, -object->physics_module->velocity().y, 0.0f});
             }
         }
+
+//        ui_object_test->update(timer.dt());
+        screen->update(timer.dt());
 
         for(unsigned int i=0; i<objects_amount; ++i)
         {
