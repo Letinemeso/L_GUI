@@ -636,7 +636,15 @@ int main()
 
     LV::Object_Constructor object_constructor;
     object_constructor.register_type<Test_Object_Stub>();
-    object_constructor.register_type<LR::Default_Draw_Module_2D_Stub>();
+
+    object_constructor.register_type<LR::Default_Draw_Module_2D_Stub>().override_initialization_func([&](LV::Variable_Base* _stub)
+    {
+        LR::Default_Draw_Module_2D_Stub* stub = (LR::Default_Draw_Module_2D_Stub*)_stub;
+        stub->graphic_resources_manager = &graphics_resources_manager;
+        stub->renderer = &renderer;
+        stub->shader_transform_component = v_shader_transform_component;
+    });
+
     object_constructor.register_type<LPhys::Rigid_Body_2D__Stub>();
 
     object_constructor.register_type<LGui::UI_Object_Stub>();
