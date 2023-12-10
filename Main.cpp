@@ -3,13 +3,12 @@
 #include <map>
 
 #include <MDL_Reader.h>
-#include <Object_Constructor.h>
 
 #include <Stuff/Timer.h>
 #include <Stuff/File.h>
 
 #include <FPS_Timer.h>
-#include <Object_System/Object_2D.h>
+#include <Object_System/Object.h>
 
 #include <Shader/Shader_Components/Shader_Transform_Component.h>
 #include <Shader/Shader_Types/Vertex_Shader.h>
@@ -29,49 +28,12 @@
 #include <Draw_Modules/Draw_Module__Text_Field.h>
 #include <Renderer/Renderer.h>
 
-#include <UI_Object_Stub.h>
-#include <Screen.h>
-
-
-
-
-struct Data
-{
-    bool initialized = false;
-    LDS::Vector<int> ints;
-};
-
-struct Test
-{
-    static Data static_data;
-
-    static const Data& get_data();
-};
-
-Data Test::static_data;
-
-const Data& Test::get_data()
-{
-    if(static_data.initialized)
-        return static_data;
-
-    static_data.ints.push(1);
-    static_data.ints.push(2);
-    static_data.ints.push(3);
-
-    static_data.initialized = true;
-
-    return static_data;
-}
-
-
-
 
 
 #define DT LR::Window_Controller::get_dt()
 
 
-class Test_Object : public LEti::Object_2D
+class Test_Object : public LEti::Object
 {
 public:
     DECLARE_VARIABLE;
@@ -81,19 +43,19 @@ public:
 
 };
 
-INIT_FIELDS(Test_Object, LEti::Object_2D)
+INIT_FIELDS(Test_Object, LEti::Object)
 FIELDS_END
 
 
 
-class Test_Object_Stub : public LEti::Object_2D_Stub
+class Test_Object_Stub : public LEti::Object_Stub
 {
 public:
     DECLARE_VARIABLE;
 
 public:
     LPhys::Rigid_Body_2D__Stub* physics_module = nullptr;
-    LR::Default_Draw_Module_2D_Stub* draw_module = nullptr;
+    LR::Default_Draw_Module_Stub* draw_module = nullptr;
 
 protected:
     LV::Variable_Base* M_construct_product() const override;
@@ -106,7 +68,7 @@ public:
 
 
 
-INIT_FIELDS(Test_Object_Stub, LEti::Object_2D_Stub)
+INIT_FIELDS(Test_Object_Stub, LEti::Object_Stub)
 
 ADD_CHILD("draw_module", draw_module)
 ADD_CHILD("physics_module", physics_module)
@@ -121,11 +83,11 @@ LV::Variable_Base* Test_Object_Stub::M_construct_product() const
 
 void Test_Object_Stub::M_init_constructed_product(LV::Variable_Base* _product) const
 {
-    LEti::Object_2D_Stub::M_init_constructed_product(_product);
+    LEti::Object_Stub::M_init_constructed_product(_product);
 
     Test_Object* result = (Test_Object*)_product;
 
-    LR::Default_Draw_Module_2D* dm = (LR::Default_Draw_Module_2D*)draw_module->construct();
+    LR::Default_Draw_Module* dm = (LR::Default_Draw_Module*)draw_module->construct();
 
     LPhys::Rigid_Body_2D* pm = (LPhys::Rigid_Body_2D*)physics_module->construct();
     pm->set_on_alignment_func([pm, dm]()
@@ -191,7 +153,7 @@ public:
         return fabs(result_direction.z);
     }
 
-    void change_color(LEti::Object_2D& _obj)
+    void change_color(LEti::Object& _obj)
     {
 //        for(unsigned int i=0; i < _obj.draw_module()->colors().size(); i += 4)
 //            _obj.draw_module()->colors()[i] = r_ratio();
@@ -207,27 +169,27 @@ public:
 class Grab
 {
 public:
-    enum class Type
-    {
-        none = 0,
-        drag,
-        launch
-    };
+	enum class Type
+	{
+		none = 0,
+		drag,
+		launch
+	};
 
 private:
     Test_Object* grabbed_object = nullptr;
-    glm::vec3 cursor_pos;
+	glm::vec3 cursor_pos;
 
-    glm::vec3 launch_from{0.0f, 0.0f, 0.0f};
+	glm::vec3 launch_from{0.0f, 0.0f, 0.0f};
 
-    Type type = Type::none;
+	Type type = Type::none;
 
 public:
     const LR::Camera_2D* camera = nullptr;
 
 public:
-    void update()
-    {
+	void update()
+	{
         cursor_pos = {LR::Window_Controller::get_cursor_position().x, LR::Window_Controller::get_cursor_position().y, 0.0f};
         cursor_pos = camera->convert_window_coords(cursor_pos);
 
@@ -238,13 +200,13 @@ public:
 
         if(type == Type::drag)
             grabbed_object->current_state().set_position(cursor_pos);
-    }
+	}
 
     void grab(Test_Object* _obj, Type _type)
-    {
-        if(type != Type::none) return;
-        type = _type;
-        grabbed_object = _obj;
+	{
+		if(type != Type::none) return;
+		type = _type;
+		grabbed_object = _obj;
 
         grabbed_object->physics_module->set_velocity({0.0f, 0.0f, 0.0f});
         grabbed_object->physics_module->set_angular_velocity(0.0f);
@@ -254,26 +216,26 @@ public:
 
         if(_type == Type::launch)
             launch_from = cursor_pos;
-    }
+	}
 
     void release(float _dt)
-    {
-        if(!grabbed_object) return;
+	{
+		if(!grabbed_object) return;
 
-        if(type == Type::drag)
-        {
+		if(type == Type::drag)
+		{
             glm::vec3 stride = grabbed_object->current_state().position() - grabbed_object->previous_state().position();
             grabbed_object->physics_module->set_velocity(stride);
-        }
-        else if(type == Type::launch)
-        {
-            glm::vec3 stride = (cursor_pos - launch_from);
+		}
+		else if(type == Type::launch)
+		{
+			glm::vec3 stride = (cursor_pos - launch_from);
             grabbed_object->physics_module->set_velocity(stride);
-        }
+		}
 
-        grabbed_object = nullptr;
-        type = Type::none;
-    }
+		grabbed_object = nullptr;
+		type = Type::none;
+	}
 
 };
 
@@ -545,9 +507,6 @@ int main()
 
     glm::vec3 cursor_position(0.0f, 0.0f, 0.0f);
 
-    Data test_data = Test::get_data();
-    Test test;
-    test_data = test.get_data();
 
 //    LST::File vertex_shader_file("Resources/Shaders/vertex_shader.shader");
 //    LST::File fragment_shader_file("Resources/Shaders/fragment_shader.shader");
@@ -622,8 +581,6 @@ int main()
 
     reader.parse_file("Resources/Textures/textures");
     reader.parse_file("Resources/Models/triangle");
-    reader.parse_file("Resources/Models/ui_object_stub_test");
-    reader.parse_file("Resources/Models/screen_test");
     LR::Graphic_Resources_Manager graphics_resources_manager;
 
     graphics_resources_manager.load_resources(reader.get_stub("resources"));
@@ -634,38 +591,14 @@ int main()
     //  ~engine setup
 
 
-    LV::Object_Constructor object_constructor;
-    object_constructor.register_type<Test_Object_Stub>();
-
-    object_constructor.register_type<LR::Default_Draw_Module_2D_Stub>().override_initialization_func([&](LV::Variable_Base* _stub)
-    {
-        LR::Default_Draw_Module_2D_Stub* stub = (LR::Default_Draw_Module_2D_Stub*)_stub;
-        stub->graphic_resources_manager = &graphics_resources_manager;
-        stub->renderer = &renderer;
-        stub->shader_transform_component = v_shader_transform_component;
-    });
-
-    object_constructor.register_type<LPhys::Rigid_Body_2D__Stub>();
-
-    object_constructor.register_type<LGui::UI_Object_Stub>();
 
 
-    LGui::Screen_Constructor screen_constructor;
-    screen_constructor.inject_object_constructor(&object_constructor);
-    LGui::Screen* screen = screen_constructor.construct_screen(reader.get_stub("screen_test"));
-
-
-    LGui::UI_Object_Stub* ui_object_stub_test = (LGui::UI_Object_Stub*)object_constructor.construct(reader.get_stub("ui_object_stub_test"));
-    ui_object_stub_test->draw_module_stub->renderer = &renderer;
-    ui_object_stub_test->draw_module_stub->shader_transform_component = v_shader_transform_component;
-    ui_object_stub_test->draw_module_stub->graphic_resources_manager = &graphics_resources_manager;
-    LEti::Object_2D* ui_object_test = (LEti::Object_2D*)ui_object_stub_test->construct();
-
-
-
-    Test_Object_Stub* test_object_stub_generated_test = (Test_Object_Stub*)object_constructor.construct(reader.get_stub("triangle"));
-
-    Test_Object_Stub& test_object_stub = *test_object_stub_generated_test;
+    Test_Object_Stub test_object_stub;
+    test_object_stub.draw_module = new LR::Default_Draw_Module_Stub;
+    test_object_stub.physics_module = new LPhys::Rigid_Body_2D__Stub;
+    test_object_stub.assign_values(reader.get_stub("triangle"));
+    test_object_stub.init_childs(reader.get_stub("triangle"));
+    test_object_stub.on_values_assigned();
     test_object_stub.draw_module->renderer = &renderer;
     test_object_stub.draw_module->shader_transform_component = v_shader_transform_component;
     test_object_stub.draw_module->graphic_resources_manager = &graphics_resources_manager;
@@ -689,12 +622,11 @@ int main()
         collision_detector.register_object(test_object->physics_module);
     }
 
-    delete test_object_stub_generated_test;
 
-    ///////////////// 2d collision test
+	///////////////// 2d collision test
 
-    auto reset_func = [&]()
-    {
+	auto reset_func = [&]()
+	{
         for(unsigned int i=0; i<objects_amount; ++i)
         {
             Test_Object* test_object = test_objects[i];
@@ -717,10 +649,10 @@ int main()
 
 //        test_object_0->update_previous_state();
 //        test_object_1->update_previous_state();
-    };
-    reset_func();
+	};
+	reset_func();
 
-    auto launch_func = [&]()
+	auto launch_func = [&]()
     {
         Test_Object* test_object_0 = test_objects[0];
         Test_Object* test_object_1 = test_objects[1];
@@ -729,9 +661,9 @@ int main()
 //        test_object_1->physics_module->set_angular_velocity(LEti::Math::PI);
 
         test_object_0->physics_module->set_velocity({700.0f, 0.0f, 0.0f});
-    };
+	};
 
-    Grab grab;
+	Grab grab;
     grab.camera = &camera;
 
     LEti::FPS_Timer fps_timer;
@@ -739,9 +671,9 @@ int main()
 
     collision_detector.register_point(&cursor_position);
 
-    unsigned int fps_counter = 0;
+	unsigned int fps_counter = 0;
 
-    bool intersection_on_prev_frame = false;
+	bool intersection_on_prev_frame = false;
 
     Color_Controll color_controll;
 
@@ -750,7 +682,7 @@ int main()
         timer.update();
         LR::Window_Controller::update();
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         for(unsigned int i=0; i<objects_amount; ++i)
         {
@@ -758,31 +690,28 @@ int main()
             object->update_previous_state();
         }
 
-//        ui_object_test->update_previous_state();
-        screen->update_previous_state();
-
         if (LR::Window_Controller::key_was_pressed(GLFW_KEY_K))
-        {
-        }
+		{
+		}
         if (LR::Window_Controller::is_key_down(GLFW_KEY_J))
-        {
+		{
             //			flat_co.rotate_impulse(LEti::Math::HALF_PI * LR::Window_Controller::get_dt());
-        }
+		}
         if (LR::Window_Controller::is_key_down(GLFW_KEY_L))
-        {
+		{
             //			flat_co.rotate_impulse(-LEti::Math::HALF_PI * LR::Window_Controller::get_dt());
-        }
+		}
 
         if(LR::Window_Controller::key_was_pressed(GLFW_KEY_R))
-        {
-            reset_func();
-        }
+		{
+			reset_func();
+		}
 
         if(LR::Window_Controller::key_was_pressed(GLFW_KEY_SPACE))
-        {
+		{
 //			reset_func();
-            launch_func();
-        }
+			launch_func();
+		}
 
 //		if (LR::Window_Controller::is_key_down(GLFW_KEY_W))
 //			sandclock_co.apply_linear_impulse({0.0f, 10.0f, 0.0f});
@@ -833,59 +762,56 @@ int main()
             }
         }
 
-//        ui_object_test->update(timer.dt());
-        screen->update(timer.dt());
-
         for(unsigned int i=0; i<objects_amount; ++i)
         {
             Test_Object* object = test_objects[i];
-//            object->physics_module->apply_linear_impulse(glm::vec3(0.0f, -100.0f, 0.0f) * timer.dt());
+            object->physics_module->apply_linear_impulse(glm::vec3(0.0f, -100.0f, 0.0f) * timer.dt());
         }
 
 //		LEti::Camera_2D::set_position(flat_co.get_pos());
 
         if(LR::Window_Controller::mouse_button_was_pressed(GLFW_MOUSE_BUTTON_1))
-        {
-            cursor_position.z = 0.0f;
+		{
+			cursor_position.z = 0.0f;
             cursor_position.x = LR::Window_Controller::get_cursor_position().x;
             cursor_position.y = LR::Window_Controller::get_cursor_position().y;
 
-            L_LOG("MOUSE_POS_LL", "Raw coords: " + std::to_string(cursor_position.x) + " " + std::to_string(cursor_position.y));
+			L_LOG("MOUSE_POS_LL", "Raw coords: " + std::to_string(cursor_position.x) + " " + std::to_string(cursor_position.y));
 
             cursor_position = camera.convert_window_coords(cursor_position);
 
-            L_LOG("MOUSE_POS_LL", "Processed coords: " + std::to_string(cursor_position.x) + " " + std::to_string(cursor_position.y));
-        }
+			L_LOG("MOUSE_POS_LL", "Processed coords: " + std::to_string(cursor_position.x) + " " + std::to_string(cursor_position.y));
+		}
         if(LR::Window_Controller::mouse_button_was_released(GLFW_MOUSE_BUTTON_1))
-        {
-            cursor_position.z = 0.0f;
+		{
+			cursor_position.z = 0.0f;
             cursor_position.x = LR::Window_Controller::get_cursor_position().x;
             cursor_position.y = LR::Window_Controller::get_cursor_position().y;
 
-            L_LOG("MOUSE_POS_LL", "Raw coords: " + std::to_string(cursor_position.x) + " " + std::to_string(cursor_position.y));
+			L_LOG("MOUSE_POS_LL", "Raw coords: " + std::to_string(cursor_position.x) + " " + std::to_string(cursor_position.y));
 
             cursor_position = camera.convert_window_coords(cursor_position);
 
-            L_LOG("MOUSE_POS_LL", "Processed coords: " + std::to_string(cursor_position.x) + " " + std::to_string(cursor_position.y));
-        }
+			L_LOG("MOUSE_POS_LL", "Processed coords: " + std::to_string(cursor_position.x) + " " + std::to_string(cursor_position.y));
+		}
         if(LR::Window_Controller::mouse_button_was_pressed(GLFW_MOUSE_BUTTON_2))
-        {
-            cursor_position.z = 0.0f;
+		{
+			cursor_position.z = 0.0f;
             cursor_position.x = LR::Window_Controller::get_cursor_position().x;
             cursor_position.y = LR::Window_Controller::get_cursor_position().y;
 
             cursor_position = camera.convert_window_coords(cursor_position);
-        }
+		}
 
-        collision_detector.update();
+		collision_detector.update();
 
         collision_resolver.resolve_all(collision_detector.get_collisions__models(), timer.dt());
 
 
 
-        std::string points_str;
+		std::string points_str;
 
-        grab.update();
+		grab.update();
 
         if(LR::Window_Controller::mouse_button_was_pressed(GLFW_MOUSE_BUTTON_1))
         {
@@ -913,7 +839,7 @@ int main()
 
 
         LR::Window_Controller::swap_buffers();
-    }
+	}
 
     for(unsigned int i=0; i<objects_amount; ++i)
     {
@@ -921,7 +847,7 @@ int main()
         delete object;
     }
 
-    return 0;
+	return 0;
 }
 
 

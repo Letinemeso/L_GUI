@@ -3,7 +3,7 @@
 
 #include <Object_Constructor.h>
 
-#include <Object_System/Object_2D.h>
+#include <Object_System/Object.h>
 
 #include <Draw_Modules/Draw_Module_Base.h>
 #include <Modules/Physics_Module_2D.h>
@@ -11,7 +11,7 @@
 namespace LGui
 {
 
-    class UI_Object_Stub : public LEti::Object_2D_Stub
+    class UI_Object_Stub : public LEti::Object_Stub
     {
     public:
         DECLARE_VARIABLE;

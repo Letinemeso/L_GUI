@@ -60,33 +60,7 @@ SOURCES += \
 	source/Screen.cpp \
 	source/UI_Object_Stub.cpp
 
-DISTFILES += \
-Resources/Font/font_yellow.png \
-	Resources/Models/circleish.mdl \
-Resources/Models/colliding_object.mdl \
-Resources/Models/debug_frame.mdl \
-Resources/Models/flat_co.mdl \
-Resources/Models/flat_co_2.mdl \
-Resources/Models/flat_colliding_object.mdl \
-Resources/Models/flat_cos/flat_co_1.mdl \
-Resources/Models/flat_cos/flat_co_2.mdl \
-Resources/Models/flat_cos/flat_co_3.mdl \
-Resources/Models/flat_indicator_red.mdl \
-	Resources/Models/hollow_square.mdl \
-Resources/Models/intersection_indicator_3d.mdl \
-Resources/Models/intersection_point_indicator.mdl \
-Resources/Models/pyramid.mdl \
-Resources/Models/quad.mdl \
-Resources/Models/quad_new.mdl \
-Resources/Models/red_cube.mdl \
-	Resources/Models/sandclock.mdl \
-Resources/Models/text_field.mdl \
-Resources/Models/text_field_new.mdl \
-Resources/Shaders/fragment_shader.shader \
-Resources/Shaders/vertex_shader.shader \
-Resources/Textures/quad.png \
-Resources/Textures/textures.mdl \
-Resources/Textures/ugly_color.png
+
 
 #win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../LEti_Engine/OpenGL/GLFW/lib/ -lglfw3
 #else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LEti_Engine/OpenGL/GLFW/lib/ -lglfw3
@@ -94,3 +68,30 @@ Resources/Textures/ugly_color.png
 HEADERS += \
 	include/Screen.h \
 	include/UI_Object_Stub.h
+
+DISTFILES += \
+    Resources/Font/font_yellow.mdl \
+    Resources/Font/small_font.mdl \
+    Resources/Models/old/colliding_object.mdl \
+    Resources/Models/old/debug_frame.mdl \
+    Resources/Models/old/debug_frame_red.mdl \
+    Resources/Models/old/flat_co.mdl \
+    Resources/Models/old/flat_co_2.mdl \
+    Resources/Models/old/flat_colliding_object.mdl \
+    Resources/Models/old/flat_cos/flat_co_1.mdl \
+    Resources/Models/old/flat_cos/flat_co_2.mdl \
+    Resources/Models/old/flat_cos/flat_co_3.mdl \
+    Resources/Models/old/flat_indicator_red.mdl \
+    Resources/Models/old/intersection_indicator_3d.mdl \
+    Resources/Models/old/intersection_point_indicator.mdl \
+    Resources/Models/old/pyramid.mdl \
+    Resources/Models/old/quad.mdl \
+    Resources/Models/old/red_cube.mdl \
+    Resources/Models/old/text_field.mdl \
+    Resources/Models/old/triangle.mdl \
+    Resources/Models/quad_new.mdl \
+    Resources/Models/screen_test.mdl \
+    Resources/Models/text_field_new.mdl \
+    Resources/Models/triangle.mdl \
+    Resources/Models/ui_object_stub_test.mdl \
+    Resources/Textures/textures.mdl

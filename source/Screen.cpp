@@ -19,7 +19,7 @@ Screen::~Screen()
 
 
 
-void Screen::add_object(const std::string &_name, LEti::Object_2D *_object)
+void Screen::add_object(const std::string &_name, LEti::Object *_object)
 {
     L_ASSERT(_object);
     L_ASSERT(_name.size() > 0);
@@ -30,21 +30,21 @@ void Screen::add_object(const std::string &_name, LEti::Object_2D *_object)
     m_objects.insert(_name, _object);
 }
 
-LEti::Object_2D* Screen::extract_object(const std::string& _name)
+LEti::Object* Screen::extract_object(const std::string& _name)
 {
-    LDS::Map<std::string, LEti::Object_2D*>::Iterator maybe_object_it = m_objects.find(_name);
+    LDS::Map<std::string, LEti::Object*>::Iterator maybe_object_it = m_objects.find(_name);
     L_ASSERT(maybe_object_it.is_ok());
 
-    LEti::Object_2D* result = *maybe_object_it;
+    LEti::Object* result = *maybe_object_it;
 
     m_objects.erase(maybe_object_it);
 
     return result;
 }
 
-LEti::Object_2D* Screen::get_object(const std::string &_name) const
+LEti::Object* Screen::get_object(const std::string &_name) const
 {
-    LDS::Map<std::string, LEti::Object_2D*>::Const_Iterator maybe_object_it = m_objects.find(_name);
+    LDS::Map<std::string, LEti::Object*>::Const_Iterator maybe_object_it = m_objects.find(_name);
     L_ASSERT(maybe_object_it.is_ok());
 
     return *maybe_object_it;
@@ -54,13 +54,13 @@ LEti::Object_2D* Screen::get_object(const std::string &_name) const
 
 void Screen::update_previous_state()
 {
-    for(LDS::Map<std::string, LEti::Object_2D*>::Iterator object_it = m_objects.iterator(); object_it.end_reached(); ++object_it)
+    for(LDS::Map<std::string, LEti::Object*>::Iterator object_it = m_objects.iterator(); object_it.end_reached(); ++object_it)
         (*object_it)->update_previous_state();
 }
 
 void Screen::update(float _dt)
 {
-    for(LDS::Map<std::string, LEti::Object_2D*>::Iterator object_it = m_objects.iterator(); object_it.end_reached(); ++object_it)
+    for(LDS::Map<std::string, LEti::Object*>::Iterator object_it = m_objects.iterator(); object_it.end_reached(); ++object_it)
         (*object_it)->update(_dt);
 }
 
@@ -85,7 +85,7 @@ Screen* Screen_Constructor::construct_screen(const LV::MDL_Variable_Stub &_stub)
 
         L_ASSERT(object_stub);
 
-        LEti::Object_2D* screen_object = (LEti::Object_2D*)object_stub->construct();
+        LEti::Object* screen_object = (LEti::Object*)object_stub->construct();
 
         result->add_object(name, screen_object);
     }

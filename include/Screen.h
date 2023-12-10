@@ -17,7 +17,7 @@ namespace LGui
     class Screen
     {
     private:
-        LDS::Map<std::string, LEti::Object_2D*> m_objects;
+        LDS::Map<std::string, LEti::Object*> m_objects;
 
         bool m_is_active = false;
 
@@ -33,9 +33,9 @@ namespace LGui
         inline void set_active(bool _value) { m_is_active = _value; }
 
     public:
-        void add_object(const std::string& _name, LEti::Object_2D* _object);    //  Screen takes ownership of _object
-        LEti::Object_2D* extract_object(const std::string& _name);              //  Screen releases ownership of returned object
-        LEti::Object_2D* get_object(const std::string& _name) const;                  //  Screen does not release ownership of returned object
+        void add_object(const std::string& _name, LEti::Object* _object);    //  Screen takes ownership of _object
+        LEti::Object* extract_object(const std::string& _name);              //  Screen releases ownership of returned object
+        LEti::Object* get_object(const std::string& _name) const;                  //  Screen does not release ownership of returned object
 
     public:
         void update_previous_state();
