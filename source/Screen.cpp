@@ -54,13 +54,13 @@ LEti::Object* Screen::get_object(const std::string &_name) const
 
 void Screen::update_previous_state()
 {
-    for(LDS::Map<std::string, LEti::Object*>::Iterator object_it = m_objects.iterator(); object_it.end_reached(); ++object_it)
+    for(LDS::Map<std::string, LEti::Object*>::Iterator object_it = m_objects.iterator(); !object_it.end_reached(); ++object_it)
         (*object_it)->update_previous_state();
 }
 
 void Screen::update(float _dt)
 {
-    for(LDS::Map<std::string, LEti::Object*>::Iterator object_it = m_objects.iterator(); object_it.end_reached(); ++object_it)
+    for(LDS::Map<std::string, LEti::Object*>::Iterator object_it = m_objects.iterator(); !object_it.end_reached(); ++object_it)
         (*object_it)->update(_dt);
 }
 

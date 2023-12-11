@@ -32,11 +32,10 @@ namespace PCV
         LV::Object_Constructor m_object_constructor;
 
     private:
-        LR::Shader_Program m_shader_program;
-
         LR::Shader_Transform_Component* m_vs_transform_component = nullptr;
         LR::Shader_Component* m_fs_component = nullptr;
 
+        LR::Shader_Program m_shader_program;
         LR::Camera_2D m_camera;
 
         LR::Renderer m_renderer;
@@ -61,7 +60,6 @@ namespace PCV
         void M_register_basic_types();
         void M_register_object_types();
         void M_init_renderer();
-        void M_init_user();
         void M_init_misc_stuff();
 
     public:

@@ -9,7 +9,6 @@ App::App()
     M_register_object_types();
     M_init_renderer();
     M_init_misc_stuff();
-    M_init_user();
 }
 
 App::~App()
@@ -296,7 +295,7 @@ void App::M_register_object_types()
 
 void App::M_init_renderer()
 {
-    LR::Window_Controller::create_window(1200, 800, "Point Cloud Visualization");
+    LR::Window_Controller::create_window(1200, 800, "L_GUI TEST");
 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_CCW);
@@ -304,7 +303,6 @@ void App::M_init_renderer()
     glEnable(GL_DEPTH_TEST);
 
     LST::File vertex_shader_file("Resources/Shaders/vertex_transform_component.shader");
-    LST::File geometry_shader_file("Resources/Shaders/point_to_quad_expand_component.shader");
     LST::File fragment_shader_file("Resources/Shaders/fragment_shader.shader");
 
     LV::MDL_Reader reader;
@@ -327,60 +325,68 @@ void App::M_init_renderer()
     fragment_shader->add_component(m_fs_component);
     fragment_shader->compile();
 
-    LR::Shader_Program shader_program;
-    shader_program.add_shader(vertex_shader);
-    shader_program.add_shader(fragment_shader);
-    shader_program.init();
+    m_shader_program.add_shader(vertex_shader);
+    m_shader_program.add_shader(fragment_shader);
+    m_shader_program.init();
 
     m_camera.set_view_scale(1.0f);
     m_camera.set_position({600, 400, 0});
 
-    LR::Renderer renderer;
-    renderer.set_camera(&m_camera);
-    renderer.set_shader_program(&shader_program);
+    m_renderer.set_camera(&m_camera);
+    m_renderer.set_shader_program(&m_shader_program);
 }
 
 
-
-void App::M_init_user()
-{
-//    LV::MDL_Reader reader;
-
-//    reader.parse_file("Resources/Textures/textures");
-//    LR::Graphic_Resources_Manager graphics_resources_manager;
-//    graphics_resources_manager.load_resources(reader.get_stub("resources"));
-
-//    reader.parse_file("Resources/Models/point_test");
-//    Test_Object_Stub test_object_stub;
-//    test_object_stub.draw_module_stub = new Draw_Module__Points__Stub;
-//    test_object_stub.draw_module_stub->renderer = &m_renderer;
-//    test_object_stub.draw_module_stub->shader_transform_component = m_vs_transform_component;
-
-//    test_object_stub.assign_values(reader.get_stub("point_test"));
-//    test_object_stub.init_childs(reader.get_stub("point_test"));
-//    test_object_stub.on_values_assigned();
-
-//    test_object = (LEti::Object*)test_object_stub.construct();
-
-//    reader.parse_file("Resources/Models/User_Stub");
-
-//    User_Stub* user_stub = (User_Stub*)m_object_constructor.construct(reader.get_stub("User_Stub"));
-
-//    m_user = (LEti::Object*)user_stub->construct();
-
-//    delete user_stub;
-}
 
 void App::M_init_misc_stuff()
 {
     timer.set_max_dt(60.0f / 1000.0f);
 }
 
-
+#include <Modules/Rigid_Body_2D.h>
+#include <Draw_Modules/Default_Draw_Module.h>
+#include <UI_Object_Stub.h>
+#include <Screen.h>
 
 void App::run()
 {
     srand(time(nullptr));
+
+    LV::MDL_Reader reader;
+
+    reader.parse_file("Resources/Textures/textures");
+    reader.parse_file("Resources/Models/triangle");
+
+    LR::Graphic_Resources_Manager graphics_resources_manager;
+    graphics_resources_manager.load_resources(reader.get_stub("resources"));
+
+    LV::Object_Constructor object_constructor;
+
+    object_constructor.register_type<LR::Default_Draw_Module_Stub>().override_initialization_func([this, &graphics_resources_manager](LV::Variable_Base* _product)
+    {
+        LR::Default_Draw_Module_Stub* product = (LR::Default_Draw_Module_Stub*)_product;
+
+        product->renderer = &m_renderer;
+        product->shader_transform_component = m_vs_transform_component;
+        product->graphic_resources_manager = &graphics_resources_manager;
+    });
+    object_constructor.register_type<LPhys::Rigid_Body_2D__Stub>();
+    object_constructor.register_type<LGui::UI_Object_Stub>();
+
+
+    reader.parse_file("Resources/Models/ui_object_stub_test");
+    reader.parse_file("Resources/Models/screen_test");
+
+    LGui::Screen_Constructor screen_constructor;
+    screen_constructor.inject_object_constructor(&object_constructor);
+    LGui::Screen* screen = screen_constructor.construct_screen(reader.get_stub("screen_test"));
+
+
+    LGui::UI_Object_Stub* ui_object_stub_test = (LGui::UI_Object_Stub*)object_constructor.construct(reader.get_stub("ui_object_stub_test"));
+    LEti::Object* ui_object_test = (LEti::Object*)ui_object_stub_test->construct();
+    delete ui_object_stub_test;
+
+
 
     while (!LR::Window_Controller::window_should_close())
     {
@@ -390,17 +396,20 @@ void App::run()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-//        m_user->update_previous_state();
-//        test_object->update_previous_state();
+//        ui_object_test->update_previous_state();
+        screen->update_previous_state();
 
 
 
 
 
-//        m_user->update(timer.dt());
-//        test_object->update(timer.dt());
+//        ui_object_test->update(timer.dt());
+        screen->update(timer.dt());
 
 
         LR::Window_Controller::swap_buffers();
     }
+
+    delete screen;
+    delete ui_object_test;
 }

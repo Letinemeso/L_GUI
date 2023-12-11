@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 FILE(GLOB_RECURSE LibFiles "include/*.h")
 add_custom_target(_L_GUI_include SOURCES ${LibFiles})
-FILE(GLOB_RECURSE Models "Resources/*.mdl")
+FILE(GLOB_RECURSE Models "Resources/*")
 add_custom_target(L_GUI_models SOURCES ${Models})
 
 
