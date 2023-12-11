@@ -1,5 +1,4 @@
-|ui_object_stub_test|
-\
+
     |type|
     \
         "LGui::UI_Object_Stub"
@@ -91,4 +90,3 @@
     \
         "0""0""1"
     /
-/

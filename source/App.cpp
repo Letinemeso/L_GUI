@@ -374,7 +374,7 @@ void App::run()
     object_constructor.register_type<LGui::UI_Object_Stub>();
 
 
-    reader.parse_file("Resources/Models/ui_object_stub_test");
+//    reader.parse_file("Resources/Models/ui_object_stub_test");
     reader.parse_file("Resources/Models/screen_test");
 
     LGui::Screen_Constructor screen_constructor;
@@ -382,9 +382,9 @@ void App::run()
     LGui::Screen* screen = screen_constructor.construct_screen(reader.get_stub("screen_test"));
 
 
-    LGui::UI_Object_Stub* ui_object_stub_test = (LGui::UI_Object_Stub*)object_constructor.construct(reader.get_stub("ui_object_stub_test"));
-    LEti::Object* ui_object_test = (LEti::Object*)ui_object_stub_test->construct();
-    delete ui_object_stub_test;
+//    LGui::UI_Object_Stub* ui_object_stub_test = (LGui::UI_Object_Stub*)object_constructor.construct(reader.get_stub("ui_object_stub_test"));
+//    LEti::Object* ui_object_test = (LEti::Object*)ui_object_stub_test->construct();
+//    delete ui_object_stub_test;
 
 
 
@@ -411,5 +411,5 @@ void App::run()
     }
 
     delete screen;
-    delete ui_object_test;
+//    delete ui_object_test;
 }
