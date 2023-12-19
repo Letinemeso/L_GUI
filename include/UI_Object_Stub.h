@@ -8,6 +8,9 @@
 #include <Draw_Modules/Draw_Module_Base.h>
 #include <Modules/Physics_Module_2D.h>
 
+#include <Data_Extraction_Module.h>
+
+
 namespace LGui
 {
 
@@ -17,8 +20,13 @@ namespace LGui
         DECLARE_VARIABLE;
 
     public:
+        std::string* tags = nullptr;
+        unsigned int tags_amount = 0;
+
+    public:
         LR::Draw_Module_Base_Stub* draw_module_stub = nullptr;
         LPhys::Physics_Module_2D_Stub* physics_module_stub = nullptr;
+        Data_Extraction_Module_Stub* data_extractor_stub = nullptr;
 
     public:
         UI_Object_Stub();

@@ -1,7 +1,7 @@
-#ifndef SCREEN_H
-#define SCREEN_H
+#pragma once
 
 #include <Data_Structures/Map.h>
+#include <Data_Structures/List.h>
 
 #include <Variable_Base.h>
 #include <Object_Constructor.h>
@@ -17,9 +17,16 @@ namespace LGui
     class Screen
     {
     private:
-        LDS::Map<std::string, LEti::Object*> m_objects;
+        using Objects_Map = LDS::Map<std::string, LEti::Object*>;
+        using Tagged_Objects_List = LDS::List<LEti::Object*>;
+        using Tags_Map = LDS::Map<std::string, Tagged_Objects_List>;
 
-        bool m_is_active = false;
+    private:
+        Objects_Map m_objects;
+        Tags_Map m_tags;
+
+        std::string m_current_tag;
+        const Tagged_Objects_List* m_current_tag_list = nullptr;
 
     public:
         Screen();
@@ -30,12 +37,18 @@ namespace LGui
         Screen(const Screen& _other) = delete;
 
     public:
-        inline void set_active(bool _value) { m_is_active = _value; }
-
-    public:
         void add_object(const std::string& _name, LEti::Object* _object);    //  Screen takes ownership of _object
         LEti::Object* extract_object(const std::string& _name);              //  Screen releases ownership of returned object
         LEti::Object* get_object(const std::string& _name) const;                  //  Screen does not release ownership of returned object
+
+        void tag_object(const std::string& _object_name, const std::string& _tag);
+        void untag_object(const std::string& _object_name, const std::string& _tag);
+
+    public:
+        void select_tag(const std::string& _tag);
+
+    public:
+        inline const std::string& current_tag() const { return m_current_tag; }
 
     public:
         void update_previous_state();
@@ -58,5 +71,3 @@ namespace LGui
     };
 
 }
-
-#endif // SCREEN_H

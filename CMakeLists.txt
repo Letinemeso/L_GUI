@@ -11,12 +11,8 @@ FILE(GLOB_RECURSE Models "Resources/*")
 add_custom_target(L_GUI_models SOURCES ${Models})
 
 
-add_executable(L_GUI
-    Main.cpp
-    source/App.cpp
-    source/Screen.cpp
-    source/UI_Object_Stub.cpp
-)
+file(GLOB_RECURSE Sources "source/*.cpp")
+add_executable(L_GUI ${Sources} Main.cpp)
 
 add_subdirectory("${PROJECT_SOURCE_DIR}/../L_Utility"
                  "${PROJECT_BINARY_DIR}/../L_Utility"

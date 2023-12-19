@@ -381,6 +381,7 @@ void App::run()
     screen_constructor.inject_object_constructor(&object_constructor);
     LGui::Screen* screen = screen_constructor.construct_screen(reader.get_stub("screen_test"));
 
+    screen->select_tag("test_tag_1");
 
 //    LGui::UI_Object_Stub* ui_object_stub_test = (LGui::UI_Object_Stub*)object_constructor.construct(reader.get_stub("ui_object_stub_test"));
 //    LEti::Object* ui_object_test = (LEti::Object*)ui_object_stub_test->construct();
@@ -400,7 +401,10 @@ void App::run()
         screen->update_previous_state();
 
 
-
+        if(LR::Window_Controller::key_was_pressed(GLFW_KEY_1))
+            screen->select_tag("test_tag_1");
+        if(LR::Window_Controller::key_was_pressed(GLFW_KEY_2))
+            screen->select_tag("test_tag_2");
 
 
 //        ui_object_test->update(timer.dt());
