@@ -19,7 +19,7 @@ Data_Extraction_Module::~Data_Extraction_Module()
 
 
 
-INIT_FIELDS(LGui::Data_Extraction_Module_Stub, LV::Builder_Stub)
+INIT_FIELDS(LGui::Data_Extraction_Module_Stub, LEti::Module_Stub)
 FIELDS_END
 
 

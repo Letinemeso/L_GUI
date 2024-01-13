@@ -33,7 +33,7 @@ namespace LGui
 
 
 
-    class Data_Extraction_Module_Stub : public LV::Builder_Stub
+    class Data_Extraction_Module_Stub : public LEti::Module_Stub
     {
     public:
         DECLARE_VARIABLE;
