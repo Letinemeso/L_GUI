@@ -4,7 +4,7 @@
 
 #include <Module.h>
 
-#include <Draw_Modules/Default_Draw_Module.h>
+#include <Draw_Modules/Draw_Module_Base.h>
 
 #include <Modules/Physics_Module_2D.h>
 
@@ -18,7 +18,7 @@ namespace LGui
         DECLARE_VARIABLE;
 
     private:
-        LR::Draw_Module_Base* m_attached_draw_module = nullptr;
+        LR::Draw_Module* m_attached_draw_module = nullptr;
         LPhys::Physics_Module_2D* m_attached_physics_module = nullptr;
 
     public:
@@ -26,7 +26,7 @@ namespace LGui
         ~Data_Extraction_Module();
 
     public:
-        inline void attach_draw_module(LR::Draw_Module_Base* _ptr) { m_attached_draw_module = _ptr; }
+        inline void attach_draw_module(LR::Draw_Module* _ptr) { m_attached_draw_module = _ptr; }
         inline void attach_physics_module(LPhys::Physics_Module_2D* _ptr) { m_attached_physics_module = _ptr; }
 
     };

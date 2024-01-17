@@ -42,7 +42,7 @@ void UI_Object_Stub::M_init_constructed_product(LV::Variable_Base *_product) con
 
     LEti::Object* product = (LEti::Object*)_product;
 
-    LR::Draw_Module_Base* dm = nullptr;
+    LR::Draw_Module* dm = nullptr;
     LPhys::Physics_Module_2D* pm = nullptr;
     Data_Extraction_Module* extractor = nullptr;
 
@@ -54,7 +54,7 @@ void UI_Object_Stub::M_init_constructed_product(LV::Variable_Base *_product) con
 
     if(draw_module_stub)
     {
-        dm = (LR::Draw_Module_Base*)draw_module_stub->construct();
+        dm = (LR::Draw_Module*)draw_module_stub->construct();
         product->add_module(dm);
 
         if(extractor)

@@ -24,7 +24,7 @@ namespace LGui
         unsigned int tags_amount = 0;
 
     public:
-        LR::Draw_Module_Base_Stub* draw_module_stub = nullptr;
+        LR::Draw_Module_Stub* draw_module_stub = nullptr;
         LPhys::Physics_Module_2D_Stub* physics_module_stub = nullptr;
         Data_Extraction_Module_Stub* data_extractor_stub = nullptr;
 
