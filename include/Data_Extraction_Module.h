@@ -29,6 +29,9 @@ namespace LGui
         inline void attach_draw_module(LR::Draw_Module* _ptr) { m_attached_draw_module = _ptr; }
         inline void attach_physics_module(LPhys::Physics_Module_2D* _ptr) { m_attached_physics_module = _ptr; }
 
+    public:
+        void update(float _dt) override { }
+
     };
 
 
