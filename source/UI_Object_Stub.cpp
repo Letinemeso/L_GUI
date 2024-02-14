@@ -7,8 +7,7 @@ INIT_FIELDS(LGui::UI_Object_Stub, LEti::Object_Stub)
 
 ADD_FIELD(glm::vec3, intended_window_size)
 
-ADD_FIELD(bool, scale_horizontally)
-ADD_FIELD(bool, scale_vertically)
+ADD_FIELD(std::string, scale_type)
 
 ADD_FIELD(glm::vec3, offset)
 ADD_FIELD(bool, scale_offset_horizontally)
@@ -62,10 +61,31 @@ void UI_Object_Stub::M_apply_window_scaling(LEti::Object* _product) const
 
     glm::vec3 scale = _product->current_state().scale();
 
-    if(scale_horizontally)
+    if(scale_type == "horizontal")
+    {
         scale.x *= window_ratio.x;
-    if(scale_vertically)
+    }
+    else if(scale_type == "vertical")
+    {
         scale.y *= window_ratio.y;
+    }
+    else if(scale_type == "both")
+    {
+        scale.x *= window_ratio.x;
+        scale.y *= window_ratio.y;
+    }
+    else if(scale_type == "proportional")
+    {
+        float multiplier = window_ratio.x;
+        if(window_ratio.y < multiplier)
+            multiplier = window_ratio.y;
+        scale.x *= multiplier;
+        scale.y *= multiplier;
+    }
+    else
+    {
+        L_ASSERT(scale_type == "none");    //  unknown scale type!
+    }
 
     _product->current_state().set_scale(scale);
 }

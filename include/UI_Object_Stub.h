@@ -22,8 +22,7 @@ namespace LGui
     public:
         glm::vec3 intended_window_size;
 
-        bool scale_horizontally = false;
-        bool scale_vertically = false;
+        std::string scale_type = "none";     //  can be "horizontal", "vertical", "both", "proportional"
 
         glm::vec3 offset{0.0f, 0.0f, 0.0f};
         bool scale_offset_horizontally = false;
