@@ -15,7 +15,7 @@ namespace LGui
     class Data_Extraction_Module : public LEti::Module      //  this class may be pointless
     {
     public:
-        DECLARE_VARIABLE;
+        INIT_VARIABLE(LGui::Data_Extraction_Module, LEti::Module)
 
     private:
         LR::Draw_Module* m_attached_draw_module = nullptr;
@@ -39,7 +39,7 @@ namespace LGui
     class Data_Extraction_Module_Stub : public LEti::Module_Stub
     {
     public:
-        DECLARE_VARIABLE;
+        INIT_VARIABLE(LGui::Data_Extraction_Module_Stub, LEti::Module_Stub)
 
     protected:
         LV::Variable_Base* M_construct_product() const override;

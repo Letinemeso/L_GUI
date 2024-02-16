@@ -3,26 +3,6 @@
 using namespace LGui;
 
 
-INIT_FIELDS(LGui::UI_Object_Stub, LEti::Object_Stub)
-
-ADD_FIELD(glm::vec3, intended_window_size)
-
-ADD_FIELD(std::string, scale_type)
-
-ADD_FIELD(glm::vec3, offset)
-ADD_FIELD(bool, scale_offset_horizontally)
-ADD_FIELD(bool, scale_offset_vertically)
-
-ADD_FIELD(std::string*, tags)
-ADD_FIELD(unsigned int, tags_amount)
-
-ADD_CHILD("draw_module_stub", draw_module_stub)
-ADD_CHILD("physics_module_stub", physics_module_stub)
-ADD_CHILD("data_extractor_stub", data_extractor_stub)
-
-FIELDS_END
-
-
 UI_Object_Stub::UI_Object_Stub()
 {
 
