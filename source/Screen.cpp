@@ -183,6 +183,8 @@ Screen* Screen_Constructor::construct_screen(const LV::MDL_Variable_Stub &_stub)
 
         for(unsigned int i=0; i<object_stub->tags_amount; ++i)
             result->tag_object(name, object_stub->tags[i]);
+
+        delete constructed_object;
     }
 
     return result;
