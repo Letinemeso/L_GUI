@@ -4,7 +4,7 @@
 
 #include <Module.h>
 
-#include <Draw_Modules/Draw_Module_Base.h>
+#include <Draw_Modules/Draw_Module.h>
 
 #include <Modules/Physics_Module_2D.h>
 
