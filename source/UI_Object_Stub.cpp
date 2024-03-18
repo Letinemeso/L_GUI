@@ -11,10 +11,6 @@ UI_Object_Stub::UI_Object_Stub()
 UI_Object_Stub::~UI_Object_Stub()
 {
     delete[] tags;
-
-    delete draw_module_stub;
-    delete physics_module_stub;
-    delete data_extractor_stub;
 }
 
 
@@ -84,35 +80,4 @@ void UI_Object_Stub::M_init_constructed_product(LV::Variable_Base *_product) con
     LEti::Object* product = (LEti::Object*)_product;
 
     M_apply_window_scaling(product);
-
-    LR::Draw_Module* dm = nullptr;
-    LPhys::Physics_Module_2D* pm = nullptr;
-    Data_Extraction_Module* extractor = nullptr;
-
-    if(data_extractor_stub)
-    {
-        extractor = (Data_Extraction_Module*)data_extractor_stub->construct();
-        product->add_module(extractor);
-    }
-
-    if(draw_module_stub)
-    {
-        dm = (LR::Draw_Module*)draw_module_stub->construct();
-        product->add_module(dm);
-
-        if(extractor)
-            extractor->attach_draw_module(dm);
-    }
-
-    if(physics_module_stub)
-    {
-        pm = (LPhys::Physics_Module_2D*)physics_module_stub->construct();
-        product->add_module(pm);
-
-        if(extractor)
-            extractor->attach_physics_module(pm);
-
-        pm->update(0.0f);
-        pm->update_prev_state();
-    }
 }

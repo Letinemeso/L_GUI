@@ -8,8 +8,6 @@
 #include <Draw_Modules/Draw_Module.h>
 #include <Modules/Physics_Module_2D.h>
 
-#include <Data_Extraction_Module.h>
-
 
 namespace LGui
 {
@@ -29,13 +27,6 @@ namespace LGui
         ADD_FIELD(unsigned int, tags_amount)
         FIELDS_END
 
-        INIT_CHILDS
-        ADD_CHILD("draw_module_stub", draw_module_stub)
-        ADD_CHILD("physics_module_stub", physics_module_stub)
-        ADD_CHILD("data_extractor_stub", data_extractor_stub)
-        CHILDS_END
-
-
     public:
         glm::vec3 intended_window_size;
 
@@ -48,11 +39,6 @@ namespace LGui
     public:
         std::string* tags = nullptr;
         unsigned int tags_amount = 0;
-
-    public:
-        LR::Draw_Module_Stub* draw_module_stub = nullptr;
-        LPhys::Physics_Module_2D_Stub* physics_module_stub = nullptr;
-        Data_Extraction_Module_Stub* data_extractor_stub = nullptr;
 
     public:
         UI_Object_Stub();
