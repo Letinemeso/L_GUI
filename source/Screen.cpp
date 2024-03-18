@@ -30,7 +30,7 @@ void Screen::M_init_collision_stuff()
 
 
     LGui::GUI_Collision_Resolution* collision_resolution = new LGui::GUI_Collision_Resolution;
-    m_collision_resolver.add_resolution(Physics_Module__GUI::get_estimated_history(), LPhys::Physics_Module__Point::get_estimated_history(), collision_resolution);
+    m_collision_resolver.set_resolution(collision_resolution);
 
 
     m_cursor_physics_module = new LPhys::Physics_Module__Point;
