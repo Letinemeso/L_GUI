@@ -223,6 +223,25 @@ void Screen::reset_interactive_objects()
 
 
 
+void Screen::M_draw_interactable_objects()
+{
+    if(!m_physical_model_renderer)
+        return;
+
+    for(LPhys::Collision_Detector::Registred_Modules_List::Const_Iterator module_it = m_collision_detector.registred_modules().begin(); !module_it.end_reached(); ++module_it)
+    {
+        if(*module_it == m_cursor_physics_module)
+            continue;
+
+        const Physics_Module__GUI* module = (const Physics_Module__GUI*)*module_it;
+        const LPhys::Physical_Model_2D* physical_model = module->get_physical_model();
+
+        m_physical_model_renderer->draw(physical_model->raw_coords(), physical_model->raw_coords_count(), module->parent_object()->current_state());
+    }
+}
+
+
+
 void Screen::update_previous_state()
 {
     if(m_current_tag_list == nullptr)
@@ -243,34 +262,37 @@ void Screen::update(float _dt)
 
     for(Tagged_Objects_List::Const_Iterator object_it = m_current_tag_list->begin(); !object_it.end_reached(); ++object_it)
         (*object_it)->update(_dt);
+
+    M_draw_interactable_objects();
 }
 
 
 
 
 
-// LMD::Physical_Model_Renderer* Screen_Constructor::construct_physical_model_renderer() const
-// {
-//     if(m_physical_model_renderer.draw_module())
-//         return;
-
-//     const LV::Object_Constructor& object_constructor = _game_state->object_constructor();
-
-//     LV::MDL_Reader reader;
-//     reader.parse_file("Resources/Debug/PM_Debug_Draw_Module");
-
-//     LR::Draw_Module_Stub* dm_stub = (LR::Draw_Module_Stub*)object_constructor.construct(reader.get_stub("PM_Debug_Draw_Module"));
-
-//     m_physical_model_renderer.set_draw_module(LR::Draw_Module_Stub::cast_product(dm_stub->construct()), 0);
-
-//     delete dm_stub;
-// }
-
-
 Screen_Stub::~Screen_Stub()
 {
-    for(LV::Variable_Base::Childs_List::Iterator it = m_gui_object_stubs.begin(); !it.end_reached(); ++it)
+    for(LV::Variable_Base::Childs_List::Iterator it = gui_object_stubs.begin(); !it.end_reached(); ++it)
         delete it->child_ptr;
+    delete physical_model_renderer_draw_module;
+}
+
+
+
+LMD::Physical_Model_Renderer* Screen_Stub::M_construct_physical_model_renderer() const
+{
+#ifndef L_DEBUG
+    return nullptr;
+#endif
+
+    if(!physical_model_renderer_draw_module)
+        return nullptr;
+
+    LMD::Physical_Model_Renderer* result = new LMD::Physical_Model_Renderer;
+
+    result->set_draw_module(LR::Draw_Module_Stub::construct_from(physical_model_renderer_draw_module), 0);
+
+    return result;
 }
 
 
@@ -285,8 +307,9 @@ BUILDER_STUB_INITIALIZATION_FUNC(Screen_Stub)
     L_ASSERT(camera);
 
     product->inject_camera(camera);
+    product->set_physical_model_renderer(M_construct_physical_model_renderer());
 
-    for(LV::Variable_Base::Childs_List::Const_Iterator it = m_gui_object_stubs.begin(); !it.end_reached(); ++it)
+    for(LV::Variable_Base::Childs_List::Const_Iterator it = gui_object_stubs.begin(); !it.end_reached(); ++it)
     {
         const std::string& name = it->name;
 
@@ -300,5 +323,5 @@ BUILDER_STUB_INITIALIZATION_FUNC(Screen_Stub)
 
         for(unsigned int i=0; i<object_stub->tags_amount; ++i)
             product->tag_object(name, object_stub->tags[i]);
-    }
+    }    
 }

@@ -88,6 +88,9 @@ namespace LGui
     public:
         inline const std::string& current_tag() const { return m_current_tag; }
 
+    private:
+        void M_draw_interactable_objects();
+
     public:
         void update_previous_state();
         void update(float _dt);
@@ -100,12 +103,17 @@ namespace LGui
     public:
         INIT_VARIABLE(LGui::Screen_Stub, LV::Builder_Stub);
 
+        INIT_CHILDS
+        ADD_CHILD("physical_model_renderer_draw_module", physical_model_renderer_draw_module)
+        CHILDS_END
+
         INIT_CHILDS_LISTS
-        ADD_CHILDS_LIST("*", &m_gui_object_stubs)
+        ADD_CHILDS_LIST("GUI_object__*", &gui_object_stubs)
         CHILDS_LISTS_END
 
-    private:
-        LV::Variable_Base::Childs_List m_gui_object_stubs;
+    public:
+        LV::Variable_Base::Childs_List gui_object_stubs;
+        LR::Draw_Module_Stub* physical_model_renderer_draw_module = nullptr;
 
     public:
         const LV::Object_Constructor* object_constructor = nullptr;
@@ -115,7 +123,7 @@ namespace LGui
         ~Screen_Stub();
 
     private:
-        // LMD::Physical_Model_Renderer* construct_physical_model_renderer() const;
+        LMD::Physical_Model_Renderer* M_construct_physical_model_renderer() const;
 
     public:
         INIT_BUILDER_STUB(Screen);
