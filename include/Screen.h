@@ -15,6 +15,8 @@
 #include <Collision_Resolution/Collision_Resolver.h>
 #include <Collisions/GUI_Collision_Resolution.h>
 
+#include <Tools/Physical_Model_Renderer.h>
+
 #include <UI_Object_Stub.h>
 #include <Collisions/Physics_Module__GUI.h>
 
@@ -22,8 +24,11 @@
 namespace LGui
 {
 
-    class Screen final
+    class Screen : public LV::Variable_Base
     {
+    public:
+        INIT_VARIABLE(LGui::Screen, LV::Variable_Base);
+
     private:
         using Objects_Map = LDS::Map<std::string, LEti::Object*>;
         using Tagged_Objects_List = LDS::List<LEti::Object*>;
@@ -46,6 +51,9 @@ namespace LGui
         LPhys::Physics_Module__Point* m_cursor_physics_module = nullptr;
 
     private:
+        LMD::Physical_Model_Renderer* m_physical_model_renderer = nullptr;
+
+    private:
         const LR::Camera_2D* m_camera = nullptr;
 
     public:
@@ -58,6 +66,7 @@ namespace LGui
 
     public:
         inline void inject_camera(const LR::Camera_2D* _ptr) { m_camera = _ptr; }
+        inline void set_physical_model_renderer(LMD::Physical_Model_Renderer* _ptr) { delete m_physical_model_renderer; m_physical_model_renderer = _ptr; }
 
     private:
         void M_init_collision_stuff();
@@ -86,26 +95,30 @@ namespace LGui
     };
 
 
-    class Screen_Constructor
+    class Screen_Stub : public LV::Builder_Stub
     {
+    public:
+        INIT_VARIABLE(LGui::Screen_Stub, LV::Builder_Stub);
+
+        INIT_CHILDS_LISTS
+        ADD_CHILDS_LIST("*", &m_gui_object_stubs)
+        CHILDS_LISTS_END
+
     private:
-        const LV::Object_Constructor* m_object_constructor = nullptr;
+        LV::Variable_Base::Childs_List m_gui_object_stubs;
 
     public:
-        using Action = LST::Function<void()>;
+        const LV::Object_Constructor* object_constructor = nullptr;
+        const LR::Camera_2D* camera = nullptr;
+
+    public:
+        ~Screen_Stub();
 
     private:
-        using Actions_Map = LDS::Map<std::string, Action>;
-        Actions_Map m_on_press_functions;
+        // LMD::Physical_Model_Renderer* construct_physical_model_renderer() const;
 
     public:
-        inline void inject_object_constructor(const LV::Object_Constructor* _ptr) { m_object_constructor = _ptr; }
-
-    public:
-        void register_action(const std::string& _name, const Action& _action);
-
-    public:
-        Screen* construct_screen(const LV::MDL_Variable_Stub& _stub) const;
+        INIT_BUILDER_STUB(Screen);
 
     };
 

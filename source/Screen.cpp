@@ -15,6 +15,8 @@ Screen::~Screen()
     for(auto it = m_objects.iterator(); !it.end_reached(); ++it)
         delete *it;
     m_objects.clear();
+
+    delete m_physical_model_renderer;
 }
 
 
@@ -93,7 +95,8 @@ LEti::Object* Screen::extract_object(const std::string& _name)
 
     m_objects.erase(maybe_object_it);
 
-    for(Tags_Map::Iterator tags_map_it = m_tags.iterator(); !tags_map_it.end_reached(); ++tags_map_it)
+    Tags_Map::Iterator tags_map_it = m_tags.iterator();
+    while(!tags_map_it.end_reached())
     {
         Tagged_Objects_List& tag_list = *tags_map_it;
 
@@ -102,13 +105,19 @@ LEti::Object* Screen::extract_object(const std::string& _name)
             ++it;
 
         if(it.end_reached())
+        {
+            ++tags_map_it;
             continue;
+        }
 
         tag_list.erase(it);
         m_collisions_registration_required = true;
-    }
 
-    //  tag list may be left empty after this operation. need to add some functionality to LDS::Map to fix it
+        if(tag_list.size() > 0)
+            ++tags_map_it;
+        else
+            tags_map_it = m_tags.erase_and_iterate_forward(tags_map_it);
+    }
 
     return result;
 }
@@ -240,32 +249,56 @@ void Screen::update(float _dt)
 
 
 
-//  Screen_Constructor
+// LMD::Physical_Model_Renderer* Screen_Constructor::construct_physical_model_renderer() const
+// {
+//     if(m_physical_model_renderer.draw_module())
+//         return;
 
-Screen* Screen_Constructor::construct_screen(const LV::MDL_Variable_Stub &_stub) const
+//     const LV::Object_Constructor& object_constructor = _game_state->object_constructor();
+
+//     LV::MDL_Reader reader;
+//     reader.parse_file("Resources/Debug/PM_Debug_Draw_Module");
+
+//     LR::Draw_Module_Stub* dm_stub = (LR::Draw_Module_Stub*)object_constructor.construct(reader.get_stub("PM_Debug_Draw_Module"));
+
+//     m_physical_model_renderer.set_draw_module(LR::Draw_Module_Stub::cast_product(dm_stub->construct()), 0);
+
+//     delete dm_stub;
+// }
+
+
+Screen_Stub::~Screen_Stub()
 {
-    L_ASSERT(m_object_constructor);
+    for(LV::Variable_Base::Childs_List::Iterator it = m_gui_object_stubs.begin(); !it.end_reached(); ++it)
+        delete it->child_ptr;
+}
 
-    Screen* result = new Screen;
 
-    for(auto it = _stub.childs.iterator(); !it.end_reached(); ++it)
+
+BUILDER_STUB_DEFAULT_CONSTRUCTION_FUNC(Screen_Stub)
+
+BUILDER_STUB_INITIALIZATION_FUNC(Screen_Stub)
+{
+    BUILDER_STUB_PARENT_INITIALIZATION;
+    BUILDER_STUB_CAST_PRODUCT;
+
+    L_ASSERT(camera);
+
+    product->inject_camera(camera);
+
+    for(LV::Variable_Base::Childs_List::Const_Iterator it = m_gui_object_stubs.begin(); !it.end_reached(); ++it)
     {
-        const std::string& name = it.key();
+        const std::string& name = it->name;
 
-        LV::Variable_Base* constructed_object = m_object_constructor->construct(*it);
-        UI_Object_Stub* object_stub = LV::cast_variable<UI_Object_Stub>(constructed_object);
+        UI_Object_Stub* object_stub = LV::cast_variable<UI_Object_Stub>(it->child_ptr);
 
         L_ASSERT(object_stub);
 
         LEti::Object* screen_object = (LEti::Object*)object_stub->construct();
 
-        result->add_object(name, screen_object);
+        product->add_object(name, screen_object);
 
         for(unsigned int i=0; i<object_stub->tags_amount; ++i)
-            result->tag_object(name, object_stub->tags[i]);
-
-        delete constructed_object;
+            product->tag_object(name, object_stub->tags[i]);
     }
-
-    return result;
 }
