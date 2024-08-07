@@ -20,14 +20,14 @@ void Physics_Module__GUI::reset()
 void Physics_Module__GUI::M_process_input()
 {
     if(m_is_hovered_on_current_frame && m_on_hover)
-        m_on_hover(m_hovered_at);
+        m_on_hover(m_hovered_at, parent_object());
 
     if(!m_is_held && m_is_hovered_on_current_frame && LR::Window_Controller::mouse_button_was_pressed(GLFW_MOUSE_BUTTON_1))
     {
         m_is_held = true;
 
         if(m_on_pressed)
-            m_on_pressed(m_hovered_at);
+            m_on_pressed(m_hovered_at, parent_object());
     }
 
     if(m_is_held && LR::Window_Controller::mouse_button_was_released(GLFW_MOUSE_BUTTON_1))
@@ -35,7 +35,7 @@ void Physics_Module__GUI::M_process_input()
         m_is_held = false;
 
         if(m_is_hovered_on_current_frame && m_on_released)
-            m_on_released(m_hovered_at);
+            m_on_released(m_hovered_at, parent_object());
     }
 }
 
@@ -47,7 +47,6 @@ void Physics_Module__GUI::update(float _dt)
 
     M_process_input();
 
-//    m_is_hovered_on_previous_frame = m_is_hovered_on_current_frame;
     m_is_hovered_on_current_frame = false;
 }
 

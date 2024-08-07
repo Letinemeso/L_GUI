@@ -23,7 +23,7 @@ void Keyboard_Input_Listener_Module::update(float)
         if(!LR::Window_Controller::key_was_pressed(m_keys_to_listen[i]))
             continue;
 
-        m_on_key_pressed_action(parent_object()->current_state().position());
+        m_on_key_pressed_action(parent_object()->current_state().position(), parent_object());
         return;
     }
 }
