@@ -11,7 +11,7 @@
 namespace LGui
 {
 
-    using Action = LST::Function<void(const glm::vec3&, LEti::Object*)>;
+    using Action = LST::Function<void(const glm::vec3&, LEti::Module*)>;
 
 
     class Actions_Controller
