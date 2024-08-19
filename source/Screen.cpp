@@ -234,6 +234,10 @@ void Screen::M_draw_interactable_objects()
             continue;
 
         const Physics_Module__GUI* module = (const Physics_Module__GUI*)*module_it;
+
+        if(!module->can_collide())
+            continue;
+
         const LPhys::Physical_Model_2D* physical_model = module->get_physical_model();
 
         m_physical_model_renderer->draw(physical_model->raw_coords(), physical_model->raw_coords_count(), module->parent_object()->current_state());
