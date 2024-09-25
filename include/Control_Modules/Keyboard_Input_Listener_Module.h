@@ -21,6 +21,8 @@ namespace LGui
 
         Action m_on_key_pressed_action;
 
+        bool m_enabled = true;
+
     public:
         Keyboard_Input_Listener_Module();
         ~Keyboard_Input_Listener_Module();
@@ -28,6 +30,9 @@ namespace LGui
     public:
         inline void set_on_key_pressed_action(const Action& _action) { m_on_key_pressed_action = _action; }
         inline void set_keys_to_listen(unsigned int* _keys, unsigned int _amount) { delete m_keys_to_listen; m_keys_to_listen = _keys; m_keys_to_listen_amount = _amount; }
+        inline void set_enabled(bool _value) { m_enabled = _value; }
+
+        inline bool enabled() const { return m_enabled; }
 
     public:
         void update(float) override;

@@ -18,6 +18,9 @@ Keyboard_Input_Listener_Module::~Keyboard_Input_Listener_Module()
 
 void Keyboard_Input_Listener_Module::update(float)
 {
+    if(!m_enabled)
+        return;
+
     for(unsigned int i=0; i<m_keys_to_listen_amount; ++i)
     {
         if(!LR::Window_Controller::key_was_pressed(m_keys_to_listen[i]))
