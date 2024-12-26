@@ -49,7 +49,7 @@ void Screen::M_update_collision_detector_registrations()
 
     m_collision_detector.unregister_all_modules();
 
-    LST::Function<void(const Physics_Module__GUI*)> add_to_collision_detector_func([this](const Physics_Module__GUI* _module)
+    LST::Function<void(Physics_Module__GUI*)> add_to_collision_detector_func([this](Physics_Module__GUI* _module)
     {
         m_collision_detector.register_module(_module);
     });
