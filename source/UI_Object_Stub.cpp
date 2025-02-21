@@ -10,7 +10,7 @@ UI_Object_Stub::UI_Object_Stub()
 
 UI_Object_Stub::~UI_Object_Stub()
 {
-    delete[] tags;
+
 }
 
 

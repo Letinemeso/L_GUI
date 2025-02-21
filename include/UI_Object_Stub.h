@@ -23,8 +23,7 @@ namespace LGui
         ADD_FIELD(glm::vec3, offset)
         ADD_FIELD(bool, scale_offset_horizontally)
         ADD_FIELD(bool, scale_offset_vertically)
-        ADD_FIELD(std::string*, tags)
-        ADD_FIELD(unsigned int, tags_amount)
+        ADD_FIELD(LDS::Vector<std::string>, tags)
         FIELDS_END
 
     public:
@@ -37,8 +36,7 @@ namespace LGui
         bool scale_offset_vertically = false;
 
     public:
-        std::string* tags = nullptr;
-        unsigned int tags_amount = 0;
+        LDS::Vector<std::string> tags;
 
     public:
         UI_Object_Stub();

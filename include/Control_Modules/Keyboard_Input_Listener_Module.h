@@ -15,9 +15,11 @@ namespace LGui
     public:
         INIT_VARIABLE(LGui::Keyboard_Input_Listener_Module, LEti::Module);
 
+    public:
+        using Keys_To_Listen_Vector = LDS::Vector<unsigned int>;
+
     private:
-        unsigned int m_keys_to_listen_amount = 0;
-        unsigned int* m_keys_to_listen = nullptr;
+        Keys_To_Listen_Vector m_keys_to_listen;
 
         Action m_on_key_pressed_action;
 
@@ -29,7 +31,7 @@ namespace LGui
 
     public:
         inline void set_on_key_pressed_action(const Action& _action) { m_on_key_pressed_action = _action; }
-        inline void set_keys_to_listen(unsigned int* _keys, unsigned int _amount) { delete m_keys_to_listen; m_keys_to_listen = _keys; m_keys_to_listen_amount = _amount; }
+        inline void set_keys_to_listen(const Keys_To_Listen_Vector& _keys) { m_keys_to_listen = _keys; }
         inline void set_enabled(bool _value) { m_enabled = _value; }
 
         inline bool enabled() const { return m_enabled; }
@@ -47,8 +49,7 @@ namespace LGui
 
         INIT_FIELDS
         ADD_FIELD(std::string, on_key_press_action_name)
-        ADD_FIELD(unsigned int*, keys_to_listen)
-        ADD_FIELD(unsigned int, keys_to_listen_amount)
+        ADD_FIELD(LDS::Vector<unsigned int>, keys_to_listen)
         FIELDS_END
 
     public:
@@ -56,8 +57,7 @@ namespace LGui
 
     public:
         std::string on_key_press_action_name;
-        unsigned int* keys_to_listen = nullptr;
-        unsigned int keys_to_listen_amount = 0;
+        LDS::Vector<unsigned int> keys_to_listen;
 
     public:
         INIT_BUILDER_STUB(Keyboard_Input_Listener_Module);

@@ -330,7 +330,7 @@ BUILDER_STUB_INITIALIZATION_FUNC(Screen_Stub)
 
         product->add_object(name, screen_object);
 
-        for(unsigned int i=0; i<object_stub->tags_amount; ++i)
+        for(unsigned int i=0; i<object_stub->tags.size(); ++i)
             product->tag_object(name, object_stub->tags[i]);
     }    
 }
