@@ -1,5 +1,7 @@
 #include <GUI_Shader_Components/FS__Component__Crop_Rect.h>
 
+#include <glew.h>
+
 using namespace LGui;
 
 

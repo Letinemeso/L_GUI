@@ -1,5 +1,7 @@
 #include <Collisions/Physics_Module__GUI.h>
 
+#include <glfw3.h>
+
 using namespace LGui;
 
 

@@ -1,5 +1,7 @@
 #include <Screen.h>
 
+#include <glfw3.h>
+
 using namespace LGui;
 
 
