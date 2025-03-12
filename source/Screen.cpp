@@ -259,10 +259,11 @@ void Screen::update_previous_state()
 
 void Screen::update(float _dt)
 {
-#ifdef L_DEBUG
-    if(LR::Window_Controller::mouse_button_was_pressed(GLFW_MOUSE_BUTTON_1))
-        std::cout << "Left mouse button was pressed at " << "[x = " << m_cursor_object.current_state().position().x << "], [y = " << m_cursor_object.current_state().position().y << "]" << std::endl;
-#endif
+    L_DEBUG_FUNC_NOARG([this]()
+    {
+        if(LR::Window_Controller::mouse_button_was_pressed(GLFW_MOUSE_BUTTON_1))
+            L_LOG(events_log_level(), "Left mouse button was pressed at [x = " + std::to_string(m_cursor_object.current_state().position().x) + "], [y = " + std::to_string(m_cursor_object.current_state().position().y) + "]");
+    });
 
     if(m_current_tag_list == nullptr)
         return;

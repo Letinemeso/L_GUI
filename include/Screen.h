@@ -27,7 +27,7 @@ namespace LGui
     class Screen : public LV::Variable_Base
     {
     public:
-        INIT_VARIABLE(LGui::Screen, LV::Variable_Base);
+        INIT_VARIABLE(LGui::Screen, LV::Variable_Base)
 
     private:
         using Objects_Map = LDS::Map<std::string, LEti::Object*>;
@@ -55,6 +55,9 @@ namespace LGui
 
     private:
         const LR::Camera_2D* m_camera = nullptr;
+
+    public:
+        inline static const std::string& events_log_level() { static std::string name = "GUI EVENT"; return name; }
 
     public:
         Screen();
