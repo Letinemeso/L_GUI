@@ -5,8 +5,6 @@
 #include <Object.h>
 
 #include <Window/Window_Controller.h>
-#include <Draw_Modules/Draw_Module.h>
-#include <Modules/Physics_Module_2D.h>
 
 
 namespace LGui

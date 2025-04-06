@@ -18,7 +18,6 @@
 #include <Tools/Physical_Model_Renderer.h>
 
 #include <UI_Object_Stub.h>
-#include <Collisions/Physics_Module__GUI.h>
 
 
 namespace LGui

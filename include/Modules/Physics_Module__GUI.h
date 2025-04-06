@@ -36,11 +36,11 @@ namespace LGui
         void notify_on_hovered(const glm::vec3& _where_exactly);
         void reset();
 
-    public:
-//        inline bool just_pressed() const { return m_is_held && m_is_hovered_on_current_frame && !m_is_hovered_on_previous_frame; }
-
     private:
         void M_process_input();
+        void M_on_hovered();
+        void M_on_pressed();
+        void M_on_released();
 
     public:
         void update(float _dt) override;
@@ -54,11 +54,9 @@ namespace LGui
         INIT_VARIABLE(LGui::Physics_Module_Stub__GUI, LPhys::Physics_Module_2D_Stub);
 
         INIT_FIELDS
-
         ADD_FIELD(std::string, on_hover_action_name)
         ADD_FIELD(std::string, on_pressed_action_name)
         ADD_FIELD(std::string, on_released_action_name)
-
         FIELDS_END
 
     public:

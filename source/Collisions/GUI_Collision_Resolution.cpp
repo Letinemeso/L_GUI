@@ -1,5 +1,9 @@
 #include <Collisions/GUI_Collision_Resolution.h>
 
+#include <Modules/Physics_Module__Point.h>
+
+#include <Modules/Physics_Module__GUI.h>
+
 using namespace LGui;
 
 

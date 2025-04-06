@@ -20,6 +20,7 @@ target_include_directories(L_GUI PUBLIC
                             "${PROJECT_SOURCE_DIR}/../LEti_Engine/OpenGL/GLM"
                             "${PROJECT_SOURCE_DIR}/../L_Renderer/include"
                             "${PROJECT_SOURCE_DIR}/../L_Physics/include"
+                            "${PROJECT_SOURCE_DIR}/../L_Sound/include"
                             "${PROJECT_SOURCE_DIR}/../L_Engine_Modules_Dump/include"
                             "${PROJECT_SOURCE_DIR}/../L_Gamedev_Lib/include"
 )

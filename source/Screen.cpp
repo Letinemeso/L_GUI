@@ -2,6 +2,8 @@
 
 #include <glfw3.h>
 
+#include <Modules/Physics_Module__GUI.h>
+
 using namespace LGui;
 
 

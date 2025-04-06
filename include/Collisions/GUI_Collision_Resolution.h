@@ -1,9 +1,6 @@
 #pragma once
 
 #include <Collision_Resolution/Collision_Resolution_Interface.h>
-#include <Modules/Physics_Module__Point.h>
-
-#include <Collisions/Physics_Module__GUI.h>
 
 
 namespace LGui
