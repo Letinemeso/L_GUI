@@ -70,7 +70,7 @@ void Screen::M_update_collisions(float _dt)
 {
     L_ASSERT(m_camera);
 
-    m_cursor_object.current_state().set_position(m_camera->convert_window_coords({LR::Window_Controller::get_cursor_position().x, LR::Window_Controller::get_cursor_position().y, 0.0f}));
+    m_cursor_object.current_state().set_position(m_camera->convert_window_coords(LR::Window_Controller::get_cursor_position()));
     m_cursor_object.update(_dt);
 
     m_collision_detector.update();

@@ -24,7 +24,7 @@ void Autoscale_Module::rescale()
 
     L_ASSERT(transformation_data());
 
-    glm::vec2 window_ratio = glm::vec2(LR::Window_Controller::get_window_data().width, LR::Window_Controller::get_window_data().height) / m_intended_window_size;
+    glm::vec2 window_ratio = glm::vec2(LR::Window_Controller::get_window_size().x, LR::Window_Controller::get_window_size().y) / m_intended_window_size;
 
     glm::vec2 scaled_offset = m_offset;
     if(m_scale_offset_horizontally)
@@ -33,9 +33,9 @@ void Autoscale_Module::rescale()
         scaled_offset.y *= window_ratio.y;
 
     if(scaled_offset.x < 0.0f)
-        scaled_offset.x += LR::Window_Controller::get_window_data().width;
+        scaled_offset.x += LR::Window_Controller::get_window_size().x;
     if(scaled_offset.y < 0.0f)
-        scaled_offset.y += LR::Window_Controller::get_window_data().height;
+        scaled_offset.y += LR::Window_Controller::get_window_size().y;
 
     transformation_data()->move({ scaled_offset, 0.0f });
 
