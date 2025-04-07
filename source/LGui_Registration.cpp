@@ -2,6 +2,7 @@
 
 #include <Screen.h>
 #include <UI_Object_Stub.h>
+#include <Modules/Autoscale_Module.h>
 #include <Modules/Keyboard_Input_Listener_Module.h>
 #include <Modules/Physics_Module__GUI.h>
 #include <Modules/Response_Sound_Module.h>
@@ -27,6 +28,8 @@ void LGui::register_types(LV::Object_Constructor& _object_constructor,
     });
 
     _object_constructor.register_type<LGui::UI_Object_Stub>();
+
+    _object_constructor.register_type<LGui::Autoscale_Module_Stub>();
 
     _object_constructor.register_type<LGui::Keyboard_Input_Listener_Module_Stub>().override_initialization_func([actions_controller](LV::Variable_Base* _product)
     {
