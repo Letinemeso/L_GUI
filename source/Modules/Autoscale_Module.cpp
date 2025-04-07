@@ -1,18 +1,19 @@
 #include <Modules/Autoscale_Module.h>
 
-#include <Window/Window_Controller.h>
-
 using namespace LGui;
 
 
 Autoscale_Module::Autoscale_Module()
 {
-
+    m_subscription_handle = LST::Message_Translator::instance().subscribe<LR::Message__Window_Resized>([this](LR::Message__Window_Resized&)
+    {
+        rescale();
+    });
 }
 
 Autoscale_Module::~Autoscale_Module()
 {
-
+    LST::Message_Translator::instance().unsubscribe(m_subscription_handle);
 }
 
 
@@ -24,7 +25,7 @@ void Autoscale_Module::rescale()
 
     L_ASSERT(transformation_data());
 
-    glm::vec2 window_ratio = glm::vec2(LR::Window_Controller::instance().get_window_size().x, LR::Window_Controller::instance().get_window_size().y) / m_intended_window_size;
+    glm::vec2 window_ratio = LR::Window_Controller::instance().get_window_size() / m_intended_window_size;
 
     glm::vec2 scaled_offset = m_offset;
     if(m_scale_offset_horizontally)
@@ -37,7 +38,7 @@ void Autoscale_Module::rescale()
     if(scaled_offset.y < 0.0f)
         scaled_offset.y += LR::Window_Controller::instance().get_window_size().y;
 
-    transformation_data()->move({ scaled_offset, 0.0f });
+    transformation_data()->set_position({ scaled_offset, 0.0f });
 
     glm::vec3 scale = { 1.0f, 1.0f, 1.0f };
 
@@ -64,6 +65,8 @@ void Autoscale_Module::rescale()
     }
 
     transformation_data()->set_scale(scale);
+
+    transformation_data()->update_matrix();
 }
 
 

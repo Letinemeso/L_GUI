@@ -1,8 +1,10 @@
 #pragma once
 
-
+#include <Stuff/Message_Translator.h>
 
 #include <Module.h>
+
+#include <Window/Window_Controller.h>
 
 
 namespace LGui
@@ -30,6 +32,8 @@ namespace LGui
         bool m_scale_offset_horizontally = false;
         bool m_scale_offset_vertically = false;
         Scale_Type m_scale_type = Scale_Type::None;
+
+        LST::Message_Translator::Handle<LR::Message__Window_Resized> m_subscription_handle;
 
     public:
         Autoscale_Module();
