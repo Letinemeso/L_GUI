@@ -18,9 +18,9 @@ namespace LGui
         struct Rectangle
         {
             float left = 0.0f;
-            float right = LR::Window_Controller::instance().get_window_size().x;
+            float right = -1.0f;
             float bottom = 0.0f;
-            float top = LR::Window_Controller::instance().get_window_size().y;
+            float top = -1.0f;
 
             inline glm::mat2x2 construct_matrix() const { return { left, right, bottom, top }; }
         };
