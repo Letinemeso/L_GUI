@@ -26,14 +26,14 @@ void Physics_Module__GUI::M_process_input()
     if(m_is_hovered_on_current_frame)
         M_on_hovered();
 
-    if(!m_is_held && m_is_hovered_on_current_frame && LR::Window_Controller::mouse_button_was_pressed(GLFW_MOUSE_BUTTON_1))
+    if(!m_is_held && m_is_hovered_on_current_frame && LR::Window_Controller::instance().mouse_button_was_pressed(GLFW_MOUSE_BUTTON_1))
     {
         m_is_held = true;
 
         M_on_pressed();
     }
 
-    if(m_is_held && LR::Window_Controller::mouse_button_was_released(GLFW_MOUSE_BUTTON_1))
+    if(m_is_held && LR::Window_Controller::instance().mouse_button_was_released(GLFW_MOUSE_BUTTON_1))
     {
         m_is_held = false;
 

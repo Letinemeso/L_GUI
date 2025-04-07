@@ -24,7 +24,7 @@ void Keyboard_Input_Listener_Module::update(float)
 
     for(unsigned int i=0; i<m_keys_to_listen.size(); ++i)
     {
-        if(!LR::Window_Controller::key_was_pressed(m_keys_to_listen[i]))
+        if(!LR::Window_Controller::instance().key_was_pressed(m_keys_to_listen[i]))
             continue;
 
         m_on_key_pressed_action(parent_object()->current_state().position(), this);

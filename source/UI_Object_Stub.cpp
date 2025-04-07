@@ -20,7 +20,7 @@ void UI_Object_Stub::M_apply_window_scaling(LEti::Object* _product) const
     if(intended_window_size.x < 0.000001f && intended_window_size.y < 0.000001f)
         return;
 
-    glm::vec3 window_ratio = glm::vec3(LR::Window_Controller::get_window_size().x, LR::Window_Controller::get_window_size().y, 0.0f) / intended_window_size;
+    glm::vec3 window_ratio = glm::vec3(LR::Window_Controller::instance().get_window_size().x, LR::Window_Controller::instance().get_window_size().y, 0.0f) / intended_window_size;
 
     glm::vec3 scaled_offset = offset;
     if(scale_offset_horizontally)
@@ -29,9 +29,9 @@ void UI_Object_Stub::M_apply_window_scaling(LEti::Object* _product) const
         scaled_offset.y *= window_ratio.y;
 
     if(scaled_offset.x < 0.0f)
-        scaled_offset.x += LR::Window_Controller::get_window_size().x;
+        scaled_offset.x += LR::Window_Controller::instance().get_window_size().x;
     if(scaled_offset.y < 0.0f)
-        scaled_offset.y += LR::Window_Controller::get_window_size().y;
+        scaled_offset.y += LR::Window_Controller::instance().get_window_size().y;
 
     _product->current_state().move(scaled_offset);
 

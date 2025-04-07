@@ -70,7 +70,7 @@ void Screen::M_update_collisions(float _dt)
 {
     L_ASSERT(m_camera);
 
-    m_cursor_object.current_state().set_position(m_camera->convert_window_coords(LR::Window_Controller::get_cursor_position()));
+    m_cursor_object.current_state().set_position(m_camera->convert_window_coords(LR::Window_Controller::instance().get_cursor_position()));
     m_cursor_object.update(_dt);
 
     m_collision_detector.update();
@@ -263,7 +263,7 @@ void Screen::update(float _dt)
 {
     L_DEBUG_FUNC_NOARG([this]()
     {
-        if(LR::Window_Controller::mouse_button_was_pressed(GLFW_MOUSE_BUTTON_1))
+        if(LR::Window_Controller::instance().mouse_button_was_pressed(GLFW_MOUSE_BUTTON_1))
             L_LOG(events_log_level(), "Left mouse button was pressed at [x = " + std::to_string(m_cursor_object.current_state().position().x) + "], [y = " + std::to_string(m_cursor_object.current_state().position().y) + "]");
     });
 
