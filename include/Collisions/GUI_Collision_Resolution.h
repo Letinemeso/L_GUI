@@ -9,7 +9,7 @@ namespace LGui
     class GUI_Collision_Resolution : public LPhys::Collision_Resolution_Interface
     {
     public:
-        void resolve(const LPhys::Intersection_Data& _id, float _dt) override;
+        bool resolve(const LPhys::Intersection_Data& _id, float _dt) override;
 
     };
 
