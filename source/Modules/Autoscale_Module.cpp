@@ -65,8 +65,6 @@ void Autoscale_Module::rescale()
     }
 
     transformation_data()->set_scale(scale);
-
-    transformation_data()->update_matrix();
 }
 
 
