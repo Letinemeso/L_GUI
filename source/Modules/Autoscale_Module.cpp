@@ -1,5 +1,7 @@
 #include <Modules/Autoscale_Module.h>
 
+#include <Object.h>
+
 using namespace LGui;
 
 
@@ -65,6 +67,9 @@ void Autoscale_Module::rescale()
     }
 
     transformation_data()->set_scale(scale);
+
+    parent_object()->update(0.0f);
+    parent_object()->update_previous_state();
 }
 
 
