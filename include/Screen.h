@@ -105,6 +105,10 @@ namespace LGui
     public:
         INIT_VARIABLE(LGui::Screen_Stub, LV::Builder_Stub);
 
+        INIT_FIELDS
+        ADD_FIELD(std::string, default_tag)
+        FIELDS_END
+
         INIT_CHILDS
         ADD_CHILD("physical_model_renderer_draw_module", physical_model_renderer_draw_module)
         CHILDS_END
@@ -112,6 +116,9 @@ namespace LGui
         INIT_CHILDS_LISTS
         ADD_CHILDS_LIST("GUI_object__*", &gui_object_stubs)
         CHILDS_LISTS_END
+
+    public:
+        std::string default_tag;
 
     public:
         LV::Variable_Base::Childs_List gui_object_stubs;
