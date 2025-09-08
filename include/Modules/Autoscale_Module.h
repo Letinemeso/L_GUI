@@ -29,8 +29,7 @@ namespace LGui
         glm::vec2 m_intended_window_size = { 0.0f, 0.0f };
         glm::vec2 m_offset = { 0.0f, 0.0f };
 
-        bool m_scale_offset_horizontally = false;
-        bool m_scale_offset_vertically = false;
+        Scale_Type m_offset_scale_type = Scale_Type::None;
         Scale_Type m_scale_type = Scale_Type::None;
 
         LST::Message_Translator::Handle<LR::Message__Window_Resized> m_subscription_handle;
@@ -42,9 +41,11 @@ namespace LGui
     public:
         inline void set_intended_window_size(const glm::vec2& _value) { m_intended_window_size = _value; }
         inline void set_offset(const glm::vec2& _value) { m_offset = _value; }
-        inline void set_scale_offset_horizontally(bool _value) { m_scale_offset_horizontally = _value; }
-        inline void set_scale_offset_vertically(bool _value) { m_scale_offset_vertically = _value; }
+        inline void set_offset_scale_type(Scale_Type _value) { m_offset_scale_type = _value; }
         inline void set_scale_type(Scale_Type _value) { m_scale_type = _value; }
+
+    private:
+        glm::vec3 M_calculate_scale(Scale_Type _scale_type) const;
 
     public:
         void rescale();
@@ -66,8 +67,7 @@ namespace LGui
         INIT_FIELDS
         ADD_FIELD(glm::vec2, intended_window_size)
         ADD_FIELD(glm::vec2, offset)
-        ADD_FIELD(bool, scale_offset_horizontally)
-        ADD_FIELD(bool, scale_offset_vertically)
+        ADD_FIELD(std::string, offset_scale_type)
         ADD_FIELD(std::string, scale_type)
         FIELDS_END
 
@@ -75,15 +75,14 @@ namespace LGui
         glm::vec2 intended_window_size = { 0.0f, 0.0f };
         glm::vec2 offset = { 0.0f, 0.0f };
 
-        bool scale_offset_horizontally = false;
-        bool scale_offset_vertically = false;
+        std::string offset_scale_type = "None";
         std::string scale_type = "None";
 
     public:
         INIT_BUILDER_STUB(Autoscale_Module)
 
     private:
-        Autoscale_Module::Scale_Type M_parse_scale_type() const;
+        Autoscale_Module::Scale_Type M_parse_scale_type(const std::string& _str) const;
 
     };
 

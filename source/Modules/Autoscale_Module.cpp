@@ -20,6 +20,38 @@ Autoscale_Module::~Autoscale_Module()
 
 
 
+glm::vec3 Autoscale_Module::M_calculate_scale(Scale_Type _scale_type) const
+{
+    glm::vec2 window_ratio = LR::Window_Controller::instance().get_window_size() / m_intended_window_size;
+    glm::vec3 scale = { 1.0f, 1.0f, 1.0f };
+
+    if(_scale_type == Scale_Type::Horizontal)
+    {
+        scale.x = window_ratio.x;
+    }
+    else if(_scale_type == Scale_Type::Vertical)
+    {
+        scale.y = window_ratio.y;
+    }
+    else if(_scale_type == Scale_Type::Both)
+    {
+        scale.x = window_ratio.x;
+        scale.y = window_ratio.y;
+    }
+    else if(_scale_type == Scale_Type::Proportional)
+    {
+        float multiplier = window_ratio.x;
+        if(window_ratio.y < multiplier)
+            multiplier = window_ratio.y;
+        scale.x = multiplier;
+        scale.y = multiplier;
+    }
+
+    return scale;
+}
+
+
+
 void Autoscale_Module::rescale()
 {
     if(m_intended_window_size.x < 0.000001f && m_intended_window_size.y < 0.000001f)
@@ -27,13 +59,7 @@ void Autoscale_Module::rescale()
 
     L_ASSERT(transformation_data());
 
-    glm::vec2 window_ratio = LR::Window_Controller::instance().get_window_size() / m_intended_window_size;
-
-    glm::vec2 scaled_offset = m_offset;
-    if(m_scale_offset_horizontally)
-        scaled_offset.x *= window_ratio.x;
-    if(m_scale_offset_vertically)
-        scaled_offset.y *= window_ratio.y;
+    glm::vec2 scaled_offset = m_offset * glm::vec2(M_calculate_scale(m_offset_scale_type));
 
     if(scaled_offset.x < 0.0f)
         scaled_offset.x += LR::Window_Controller::instance().get_window_size().x;
@@ -42,29 +68,7 @@ void Autoscale_Module::rescale()
 
     transformation_data()->set_position({ scaled_offset, 0.0f });
 
-    glm::vec3 scale = { 1.0f, 1.0f, 1.0f };
-
-    if(m_scale_type == Scale_Type::Horizontal)
-    {
-        scale.x = window_ratio.x;
-    }
-    else if(m_scale_type == Scale_Type::Vertical)
-    {
-        scale.y = window_ratio.y;
-    }
-    else if(m_scale_type == Scale_Type::Both)
-    {
-        scale.x = window_ratio.x;
-        scale.y = window_ratio.y;
-    }
-    else if(m_scale_type == Scale_Type::Proportional)
-    {
-        float multiplier = window_ratio.x;
-        if(window_ratio.y < multiplier)
-            multiplier = window_ratio.y;
-        scale.x = multiplier;
-        scale.y = multiplier;
-    }
+    glm::vec3 scale = M_calculate_scale(m_scale_type);
 
     transformation_data()->set_scale(scale);
 
@@ -100,24 +104,23 @@ BUILDER_STUB_INITIALIZATION_FUNC(Autoscale_Module_Stub)
 
     product->set_intended_window_size(intended_window_size);
     product->set_offset(offset);
-    product->set_scale_offset_horizontally(scale_offset_horizontally);
-    product->set_scale_offset_vertically(scale_offset_vertically);
-    product->set_scale_type(M_parse_scale_type());
+    product->set_offset_scale_type(M_parse_scale_type(offset_scale_type));
+    product->set_scale_type(M_parse_scale_type(scale_type));
 }
 
 
 
-Autoscale_Module::Scale_Type Autoscale_Module_Stub::M_parse_scale_type() const
+Autoscale_Module::Scale_Type Autoscale_Module_Stub::M_parse_scale_type(const std::string& _str) const
 {
-    if(scale_type == "None")
+    if(_str == "None")
         return Autoscale_Module::Scale_Type::None;
-    else if(scale_type == "Horizontal")
+    else if(_str == "Horizontal")
         return Autoscale_Module::Scale_Type::Horizontal;
-    else if(scale_type == "Vertical")
+    else if(_str == "Vertical")
         return Autoscale_Module::Scale_Type::Vertical;
-    else if(scale_type == "Both")
+    else if(_str == "Both")
         return Autoscale_Module::Scale_Type::Both;
-    else if(scale_type == "Proportional")
+    else if(_str == "Proportional")
         return Autoscale_Module::Scale_Type::Proportional;
 
     L_ASSERT(false);
