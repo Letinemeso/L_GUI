@@ -49,6 +49,9 @@ namespace LGui
         LEti::Object m_cursor_object;
         LPhys::Physics_Module__Point* m_cursor_physics_module = nullptr;
 
+        bool m_input_enabled_on_next_update = true;
+        bool m_input_enabled = true;
+
     private:
         LMD::Physical_Model_Renderer* m_physical_model_renderer = nullptr;
 
@@ -68,9 +71,13 @@ namespace LGui
 
     public:
         inline void inject_camera(const LR::Camera_2D* _ptr) { m_camera = _ptr; }
-        inline void set_physical_model_renderer(LMD::Physical_Model_Renderer* _ptr) { delete m_physical_model_renderer; m_physical_model_renderer = _ptr; }
-
         inline const LR::Camera_2D* camera() const { return m_camera; }
+
+        inline void enable_input(bool _enable) { m_input_enabled = _enable; m_input_enabled_on_next_update = _enable; }
+        inline void enable_input_on_next_update(float _enable) { m_input_enabled_on_next_update = _enable; }
+        inline bool input_enabled() const { return m_input_enabled; }
+
+        inline void set_physical_model_renderer(LMD::Physical_Model_Renderer* _ptr) { delete m_physical_model_renderer; m_physical_model_renderer = _ptr; }
 
     private:
         void M_init_collision_stuff();

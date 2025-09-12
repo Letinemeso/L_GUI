@@ -70,6 +70,9 @@ void Screen::M_update_collisions(float _dt)
 {
     L_ASSERT(m_camera);
 
+    if(!m_input_enabled)
+        return;
+
     m_cursor_object.current_state().set_position(m_camera->convert_window_coords(LR::Window_Controller::instance().get_cursor_position()));
     m_cursor_object.update(_dt);
 
@@ -220,7 +223,7 @@ void Screen::reset_interactive_objects()
         if(*module_it == m_cursor_physics_module)
             continue;
 
-        Physics_Module__GUI* module = (Physics_Module__GUI*)*module_it;     //  this casts and removes const at the same time - ugly af, but Screen should only put valid modules there and it also kinda owns them
+        Physics_Module__GUI* module = (Physics_Module__GUI*)*module_it;
         module->reset();
     }
 }
@@ -257,6 +260,8 @@ void Screen::update_previous_state()
 
     for(Tagged_Objects_List::Const_Iterator object_it = m_current_tag_list->begin(); !object_it.end_reached(); ++object_it)
         (*object_it)->update_previous_state();
+
+    m_input_enabled = m_input_enabled_on_next_update;
 }
 
 void Screen::update(float _dt)
