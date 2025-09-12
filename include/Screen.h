@@ -70,6 +70,8 @@ namespace LGui
         inline void inject_camera(const LR::Camera_2D* _ptr) { m_camera = _ptr; }
         inline void set_physical_model_renderer(LMD::Physical_Model_Renderer* _ptr) { delete m_physical_model_renderer; m_physical_model_renderer = _ptr; }
 
+        inline const LR::Camera_2D* camera() const { return m_camera; }
+
     private:
         void M_init_collision_stuff();
         void M_update_collision_detector_registrations();
