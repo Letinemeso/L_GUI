@@ -82,7 +82,7 @@ void Physics_Module__GUI::M_on_released()
 
 void Physics_Module__GUI::update(float _dt)
 {
-    LPhys::Physics_Module_2D::update(_dt);
+    LPhys::Physics_Module__Mesh::update(_dt);
 
     M_process_input();
 

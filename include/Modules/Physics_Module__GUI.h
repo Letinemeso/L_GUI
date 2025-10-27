@@ -2,7 +2,7 @@
 
 #include <Stuff/Function_Wrapper.h>
 
-#include <Modules/Physics_Module_2D.h>
+#include <Modules/Physics_Module__Mesh.h>
 
 #include <Window/Window_Controller.h>
 
@@ -12,10 +12,10 @@
 namespace LGui
 {
 
-    class Physics_Module__GUI : public LPhys::Physics_Module_2D
+    class Physics_Module__GUI : public LPhys::Physics_Module__Mesh
     {
     public:
-        INIT_VARIABLE(LGui::Physics_Module__GUI, LPhys::Physics_Module_2D);
+        INIT_VARIABLE(LGui::Physics_Module__GUI, LPhys::Physics_Module__Mesh);
 
     private:
         Action m_on_hover;
@@ -48,10 +48,10 @@ namespace LGui
     };
 
 
-    class Physics_Module_Stub__GUI : public LPhys::Physics_Module_2D_Stub
+    class Physics_Module_Stub__GUI : public LPhys::Physics_Module_Stub__Mesh
     {
     public:
-        INIT_VARIABLE(LGui::Physics_Module_Stub__GUI, LPhys::Physics_Module_2D_Stub);
+        INIT_VARIABLE(LGui::Physics_Module_Stub__GUI, LPhys::Physics_Module_Stub__Mesh);
 
         INIT_FIELDS
         ADD_FIELD(std::string, on_hover_action_name)
