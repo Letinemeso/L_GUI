@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Resources_Manager.h>
+#include <Variable_Loader.h>
 
 #include <Sound.h>
 
