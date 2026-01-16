@@ -22,7 +22,7 @@ void Keyboard_Input_Listener_Module::update(float)
     if(!m_enabled)
         return;
 
-    for(unsigned int i=0; i<m_keys_to_listen.size(); ++i)
+    for(unsigned int i = 0; i < m_keys_to_listen.size(); ++i)
     {
         if(!LR::Window_Controller::instance().key_was_pressed(m_keys_to_listen[i]))
             continue;
