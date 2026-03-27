@@ -15,7 +15,7 @@ bool GUI_Collision_Resolution::resolve(const LPhys::Intersection_Data& _id, floa
     Physics_Module__GUI* gui_physics_module = (Physics_Module__GUI*)_id.first;
 //    LPhys::Physics_Module__Point* physics_module_point = (LPhys::Physics_Module__Point*)_id.second;
 
-    gui_physics_module->notify_on_hovered(_id.point);
+    gui_physics_module->notify_on_hovered(_id.points[0]);
 
     return true;
 }
