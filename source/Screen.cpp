@@ -247,7 +247,7 @@ void Screen::M_draw_interactable_objects()
 
         const LPhys::Physical_Model* physical_model = module->get_physical_model();
 
-        m_physical_model_renderer->draw(physical_model->raw_coords(), physical_model->raw_coords_count(), module->parent_object()->current_state());
+        m_physical_model_renderer->draw(physical_model->raw_coords().raw_data(), physical_model->raw_coords().size(), module->parent_object()->current_state());
     }
 }
 
