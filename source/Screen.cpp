@@ -28,7 +28,6 @@ Screen::~Screen()
 void Screen::M_init_collision_stuff()
 {
     LPhys::Binary_Space_Partitioner* broad_phase = new LPhys::Binary_Space_Partitioner;
-    broad_phase->set_precision(2);
     m_collision_detector.set_broad_phase(broad_phase);
 
     LPhys::Narrow_Phase__Model_Vs_Point* narrow_phase = new LPhys::Narrow_Phase__Model_Vs_Point;
